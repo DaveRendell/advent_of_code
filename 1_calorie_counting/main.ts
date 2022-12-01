@@ -1,61 +1,50 @@
-import {createReadStream} from 'fs'
-import {join} from 'path'
+import readLines from '../utils/readLines'
+import { sum } from '../utils/reducers'
+import { ascending } from '../utils/sorters'
 
 const INPUT_NAME = "input.txt"
 
 function partOne() {
-  const path = join(__dirname, INPUT_NAME)
-  const fileStream = createReadStream(path, 'utf-8')
-
-  fileStream.on('error', (error) => console.error('ERROR: ' + error.message))
-  var highestTotal = 0
-  var runningTotal = 0
-  fileStream.on('data', (chunk) => {
-    const input = chunk.toString()
-    input.split('\n').forEach(line => {
-      if (line.length == 0) {
-        highestTotal = runningTotal >= highestTotal ? runningTotal : highestTotal
-        runningTotal = 0
-        return
-      }
-      var calorieValue = parseInt(line)
-      runningTotal += calorieValue
-    })
-  })
-  fileStream.on('end', () => console.log("Highest total: " + highestTotal))
+  const highestTotal = [...readLines(__dirname, INPUT_NAME), ""]
+    .reduce(findHighestTotal, { highestTotal: 0, runningTotal: 0 })
+    .highestTotal
+  
+  console.log("(P1) Highest total: " + highestTotal)
 }
 
 function partTwo() {
-  const path = join(__dirname, INPUT_NAME)
-  const fileStream = createReadStream(path, 'utf-8')
-
-  fileStream.on('error', (error) => console.error('ERROR: ' + error.message))
-  var topThree = [0, 0, 0]
-  var lowestTopThree = 0
-  var runningTotal = 0
-
-  fileStream.on('data', (chunk) => {
-    const input = chunk.toString()
-    input.split('\n').forEach(line => {
-      if (line.length == 0) {
-        if (runningTotal > lowestTopThree) {
-          topThree.push(runningTotal)
-          topThree.sort()
-          topThree.splice(0, 1)
-          lowestTopThree = topThree[0]
-        }
-        runningTotal = 0
-        return
-      }
-      var calorieValue = parseInt(line)
-      runningTotal += calorieValue
-    })
-  })
-  fileStream.on('end', () => {
-    const total = topThree.reduce((a, b) => a + b)
-    console.log("TOTAL: " + total)
-  })
+  const highestTotal = [...readLines(__dirname, INPUT_NAME), ""]
+    .reduce(findTopThree, { topThree: [0, 0, 0], runningTotal: 0 })
+    .topThree.reduce(sum)
+  
+  console.log("(P2) Total of top three: " + highestTotal)
 }
 
-// partOne()
+interface HighestTotalAccumulator {
+  highestTotal: number
+  runningTotal: number
+}
+
+const findHighestTotal = (
+  { highestTotal, runningTotal }: HighestTotalAccumulator,
+  line: string
+): HighestTotalAccumulator => 
+  line
+    ? { highestTotal, runningTotal: runningTotal + parseInt(line) }
+    : { highestTotal: Math.max(highestTotal, runningTotal), runningTotal: 0 }
+
+interface TopThreeAccumulator {
+  topThree: number[]
+  runningTotal: number
+}
+
+const findTopThree = (
+  { topThree, runningTotal }: TopThreeAccumulator,
+  line: string
+): TopThreeAccumulator => 
+  line
+    ? { topThree, runningTotal: runningTotal + parseInt(line) }
+    : { topThree: [...topThree, runningTotal].sort(ascending).slice(1), runningTotal: 0 }
+
+partOne()
 partTwo()
