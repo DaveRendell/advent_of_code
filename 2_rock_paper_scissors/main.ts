@@ -4,58 +4,26 @@ import { sum } from "../utils/reducers"
 
 const INPUT_NAME = "input.txt"
 
+const getScore = (p1: number, p2: number) => 3 * ((p1 - p2 + 4) % 3)
+const getP1 = (p2: number, outcome: number) => (p2 + outcome + 5) % 3
+
 function partOne() {
   const score = readLines(__dirname, INPUT_NAME)
-    .map(scoreForLine_p1)
+    .filter(line => line)
+    .map(line => [line.charCodeAt(2) - 88, line.charCodeAt(0) - 65])
+    .map(([p1, p2]) => p1 + 1 + getScore(p1, p2))
     .reduce(sum)
-
   console.log("(P1) Score: " + score)
 }
 
 function partTwo() {
   const score = readLines(__dirname, INPUT_NAME)
-    .map(scoreForLine_p2)
+    .filter(line => line)
+    .map(line => [line.charCodeAt(0) - 65, line.charCodeAt(2) - 88])
+    .map(([p2, outcome]) => [getP1(p2, outcome), p2])
+    .map(([p1, p2]) => p1 + 1 + getScore(p1, p2))
     .reduce(sum)
-
   console.log("(P2) Score: " + score)
-}
-
-type ABC = "A" | "B" | "C"
-type XYZ = "X" | "Y" | "Z"
-
-const CHOICE_SCORE = {
-  "X": 1,
-  "Y": 2,
-  "Z": 3,
-}
-
-const OUTCOME_SCORE = {
-  "A": { "X": 3, "Y": 6, "Z": 0},
-  "B": { "X": 0, "Y": 3, "Z": 6},
-  "C": { "X": 6, "Y": 0, "Z": 3},
-}
-
-function scoreForLine_p1(line: string): number {
-  if (!line) { return 0 }
-  const opponentPlay = line[0] as ABC
-  const yourPlay = line[2] as XYZ
-
-  return CHOICE_SCORE[yourPlay] + OUTCOME_SCORE[opponentPlay][yourPlay]
-}
-
-const YOUR_PLAY = {
-  "A": { "X": "Z", "Y": "X", "Z": "Y"},
-  "B": { "X": "X", "Y": "Y", "Z": "Z"},
-  "C": { "X": "Y", "Y": "Z", "Z": "X"},
-}
-
-function scoreForLine_p2(line: string): number {
-  if (!line) { return 0 }
-  const opponentPlay = line[0] as ABC
-  const outcome = line[2] as XYZ
-  const yourPlay = YOUR_PLAY[opponentPlay][outcome] as XYZ
-
-  return CHOICE_SCORE[yourPlay] + OUTCOME_SCORE[opponentPlay][yourPlay]
 }
 
 partOne()
