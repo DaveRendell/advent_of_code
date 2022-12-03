@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "day1": "ts-node 1_calorie_counting/main.ts",
-    "day2": "ts-node 2_rock_paper_scissors/main.ts"
+    "day2": "ts-node 2_rock_paper_scissors/main.ts",
+    "day3": "ts-node 3_rucksack_reorganisation/main.ts"
   },
   "author": "",
   "license": "ISC",
