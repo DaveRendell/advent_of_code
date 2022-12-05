@@ -8,5 +8,5 @@ echo "folder $FOLDER"
 mkdir $FOLDER
 touch $FOLDER/sample.txt
 touch $FOLDER/input.txt
-touch $FOLDER/main.ts
+cp template.ts $FOLDER/main.ts
 npx npmAddScript -k "day$NUMBER" -v "ts-node $FOLDER/main.ts"
