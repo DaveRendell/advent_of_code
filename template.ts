@@ -1,9 +1,8 @@
 import readLines from "../utils/readLines"
-
-const INPUT_TEXT = "sample.txt"
+import inputFile from "../utils/inputFile"
 
 function partOne() {
-  const input = readLines(__dirname, INPUT_TEXT)
+  const input = readLines(__dirname, inputFile())
 
   console.log("(P1) Answer: ")
 }
