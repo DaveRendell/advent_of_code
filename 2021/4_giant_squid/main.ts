@@ -46,7 +46,7 @@ function parse(): [number[], number[][][]] {
 const getLines = (board: number[][]): number[][] =>
   [
     ...board, //rows
-    ...range(BOARD_SIZE).map(index => board.map(row => row[index])), //cols
+    ...range(0, BOARD_SIZE).map(index => board.map(row => row[index])), //cols
   ]
 
 const getTurnComplete = (board: number[][], drawnNumbers: number[]): number =>
