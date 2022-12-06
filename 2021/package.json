@@ -5,6 +5,7 @@
     "day3": "ts-node 3_binary_diagnostic/main.ts",
     "day6": "ts-node 6_lanternfish/main.ts",
     "day7": "ts-node 7_the_treachery_of_whales/main.ts",
-    "day8": "ts-node 8_seven_segment_search/main.ts $1"
+    "day8": "ts-node 8_seven_segment_search/main.ts $1",
+    "day9": "ts-node 9_smoke_basin/main.ts "
   }
 }
