@@ -8,6 +8,7 @@
     "day8": "ts-node 8_seven_segment_search/main.ts $1",
     "day9": "ts-node 9_smoke_basin/main.ts ",
     "day10": "ts-node 10_syntax_scoring/main.ts ",
-    "day11": "ts-node 11_dumbo_octopus/main.ts "
+    "day11": "ts-node 11_dumbo_octopus/main.ts ",
+    "day12": "ts-node 12_passage_printing/main.ts "
   }
 }
