@@ -6,9 +6,16 @@ import { ascending } from "../../utils/sorters"
 function runSteps(steps: number) {
   const { 0: [startState], 1: instructions } = readParagraphs(__dirname, inputFile())
   const replacementMap = instructions.reduce(addToMap, {})
+  const initialPairCounts = range(0, startState.length - 1)
+    .map(i => startState.slice(i, i + 2))
+    .reduce(getCounts, {})
   
-  const polymer = range(0, steps).reduce(processStep(replacementMap), startState)
-  const lengths = Object.values([...polymer].reduce(getCharacterCounts, {})).sort(ascending)
+  const pairCounts = range(0, steps).reduce(processStep(replacementMap), initialPairCounts)
+  const elementCounts = Object.entries(pairCounts).reduce((charCounts: Record<string, number>, [pair, count]) => ({
+    ...charCounts,
+    [pair[0]]: charCounts[pair[0]] ? charCounts[pair[0]] + count : count
+  }), { [startState.at(-1)]: 1 }) // Last element is the same at all steps, and wouldn't be counted otherwise
+  const lengths = Object.entries(elementCounts).map(([_, count]) => count).sort(ascending)
   return (lengths.at(-1) - lengths.at(0))
 }
 
@@ -17,28 +24,27 @@ function partOne() {
 }
 
 function partTwo() {
-  console.log("(P2) Answer: " + runSteps(40)) // Too slow -_-
+  console.log("(P2) Answer: " + runSteps(40))
 }
 
-function addToMap(map: Record<string, string>, instruction: string): Record<string, string> {
+function addToMap(map: Record<string, string[]>, instruction: string): Record<string, string[]> {
   const [pair, insert] = instruction.split(" -> ")
-  const start = pair[0]
-  return { ...map, [pair]: start + insert }
+  const [start, end] = pair.split("")
+  return { ...map, [pair]: [start + insert, insert + end] }
 }
 
-const processStep = (replacementMap: Record<string, string>) => (polymer: string, step: number): string => {
-  console.log("Step " + step + ". Polymer length " + polymer.length)
-  var out = ""
-  for (let i = 0; i < polymer.length; i++) {
-    var slice = polymer.slice(i, i + 2)
-    var replacement = replacementMap[slice]
-    if (replacement) { out += replacement }
-    else { out += polymer[i] }
-  }
-  return out
+const processStep = (replacementMap: Record<string, string[]>) => (pairCounts: Record<string, number>, step: number): Record<string, number> => {
+  return Object.entries(pairCounts).reduce((counts: Record<string, number>, [pair, count]: [string, number]) => {
+    const [newPair1, newPair2] = replacementMap[pair]
+    return {
+      ...counts,
+      [newPair1]: counts[newPair1] ? counts[newPair1] + count : count,
+      [newPair2]: counts[newPair2] ? counts[newPair2] + count : count,
+    }
+  }, {})
 }
 
-const getCharacterCounts = (counts: Record<string, number>, next: string): Record<string, number> =>
+const getCounts = (counts: Record<string, number>, next: string): Record<string, number> =>
   ({ ...counts, [next]: counts[next] ? counts[next] + 1 : 1})
 
 partOne()
