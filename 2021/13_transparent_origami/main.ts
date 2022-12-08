@@ -45,13 +45,12 @@ function createStartGrid(input: string[]): string[][] {
 const processInstruction = (grid: string[][], instruction: string): string[][] => {
   const [axis, valueString] = instruction.slice(11).split("=")
   const value = parseInt(valueString)
-  console.log(`${axis}: ${value}`)
 
   if (axis === "y") {
     return grid.slice(0, value)
       .map((row, rowIndex) => row
         .map((cell, cellIndex) =>
-          grid[value + (value - rowIndex)][cellIndex] === "#" ? "#" : cell))
+          grid.at(value + (value - rowIndex)) && grid[value + (value - rowIndex)][cellIndex] === "#" ? "#" : cell))
   }
 
   return grid.map((row, rowIndex) =>
