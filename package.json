@@ -10,7 +10,8 @@
     "day4": "ts-node 4_camp_cleanup/main.ts",
     "day5": "ts-node 5_supply_stacks/main.ts",
     "day6": "ts-node 6_tuning_trouble/main.ts ",
-    "day7": "ts-node 7_no_space_left_on_device/main.ts "
+    "day7": "ts-node 7_no_space_left_on_device/main.ts ",
+    "day8": "ts-node 8_treetop_tree_house/main.ts "
   },
   "author": "",
   "license": "ISC",
