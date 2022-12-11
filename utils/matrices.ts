@@ -8,16 +8,25 @@ export const multiply = (a: number[][], b: number[][]): number[][] =>
         .map(k => a[i][k] * b[k][j])
         .reduce(sum)))
 
-//export const rotation3D = ()
-
-const v = [
-  [1, 2],
-  [3, 4]
+const I = [
+  [1, 0, 0],
+  [0, 1, 0],
+  [0, 0, 1]
 ]
 
-const w = [
-  [5],
-  [6]
+export const pow = (a: number[][], exp: number): number[][] =>
+  exp === 0
+    ? I
+    : range(0, exp).reduce((product) => multiply(product, a), a)
+
+const X = [
+  [ 1,  0,  0],
+  [ 0,  0, -1],
+  [ 0,  1,  0]
 ]
 
-console.log(multiply(v, w))
+const Y = [
+  [ 0,  0,  1],
+  [ 0,  1,  0],
+  [-1,  0,  0]
+]
