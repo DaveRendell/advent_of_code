@@ -4,33 +4,41 @@ import readParagraphs from "../utils/readParagraphs"
 import { product } from "../utils/reducers"
 import { descending } from "../utils/sorters"
 
-function partOne() {
-  const startMonkeys = readParagraphs(__dirname, inputFile()).map(parseMonkey)
+function partTwo() {
+  const tests = readParagraphs(__dirname, inputFile()).map(getTest)
+  const startMonkeys = readParagraphs(__dirname, inputFile()).map(parseMonkey(tests))
 
-  const endMonkeys = range(0, 20).reduce((monkeys) => round(monkeys), startMonkeys)
-  console.log(printItemLists(endMonkeys))
+  const endMonkeys = range(0, 10000).reduce((monkeys, _, i) => {
+    const result = round(monkeys)
+    if ([1, 20].includes(i + 1) || (i + 1) % 1000 === 0) {
+      console.log(`\n\n== After round ${i + 1} ==`)
+      console.log(printInspections(result))
+    }
+    return result
+  }, startMonkeys)
 
-  console.log("(P1) Answer: " + getMonkeyBusiness(endMonkeys))
+
+  console.log("(P2) Answer: " + getMonkeyBusiness(endMonkeys))
 }
 
-function partTwo() {}
+type Item = { [factor: number]: number }
 
 interface Monkey {
-  items: number[]
-  operation: (a: number, b: number) => number,
-  operand: number | "old"
+  items: Item[]
+  operation: (a: Item, b: Item) => Item,
+  operand: Item | "old"
   test: number
   trueTarget: number
   falseTarget: number
   inspections: number
 }
-const add = (a: number, b: number): number => a + b
-const multiply = (a: number, b: number): number => a * b
+const add = (a: Item, b: Item): Item => mergeNumberMaps((x, y) => (x + y))(a, b)
+const multiply = (a: Item, b: Item): Item => mergeNumberMaps((x, y) => (x * y))(a, b)
 
-const parseMonkey = (paragraph: string[]): Monkey => ({
-  items: paragraph[1].slice(18).split(", ").map(v => parseInt(v)),
+const parseMonkey = (tests: number[]) => (paragraph: string[]): Monkey => ({
+  items: paragraph[1].slice(18).split(", ").map(v => generateModMap(tests, parseInt(v))),
   operation: paragraph[2].trimStart().split(" ")[4] === "*" ? multiply : add,
-  operand: ((str) => str === "old"? "old" : parseInt(str))
+  operand: ((str) => str === "old"? "old" : generateModMap(tests, parseInt(str)))
     (paragraph[2].trimStart().split(" ")[5]),
   test: parseInt(paragraph[3].trimStart().split(" ")[3]),
   trueTarget: parseInt(paragraph[4].trimStart().split(" ")[5]),
@@ -46,9 +54,8 @@ const turn = (monkeys: Monkey[], monkeyId: number): Monkey[] => {
   const worriedItems = monkey.items.map(item => monkey.operand === "old"
     ? monkey.operation(item, item)
     : monkey.operation(item, monkey.operand))
-  const relievedItems = worriedItems.map(item => Math.floor(item / 3))
-  const testPassItems = relievedItems.filter(item => item % monkey.test === 0)
-  const testFailItems = relievedItems.filter(item => item % monkey.test !== 0)
+  const testPassItems = worriedItems.filter(item => isDivisibleBy(item, monkey.test))
+  const testFailItems = worriedItems.filter(item => !isDivisibleBy(item, monkey.test))
 
   return monkeys.map((mon, id) => {
     if (id === monkeyId) {
@@ -74,9 +81,12 @@ const turn = (monkeys: Monkey[], monkeyId: number): Monkey[] => {
   })
 }
 
-const printItemLists = (monkeys: Monkey[]): string => {
-  return monkeys.map((monkey, i) => `Monkey ${i}: ${monkey.items.join(", ")}`).join("\n")
-}
+const isDivisibleBy = (item: Item, number: number): boolean =>
+  item[number] === 0
+
+const printInspections = (monkeys: Monkey[]): string => monkeys
+  .map(({inspections}, i) => `Monkey ${i} inspected items ${inspections} times`)
+  .join("\n")
 
 const getMonkeyBusiness = (monkeys: Monkey[]): number => monkeys
   .map(monkey => monkey.inspections)
@@ -84,7 +94,18 @@ const getMonkeyBusiness = (monkeys: Monkey[]): number => monkeys
   .slice(0, 2)
   .reduce(product)
 
+const generateModMap = (tests: number[], number: number): Item =>
+  Object.fromEntries(tests.map(test => [test, number % test]))
 
-partOne()
+const mergeNumberMaps = (operation: (x: number, y: number) => number) =>
+  (a: Item, b: Item) => ({
+    ...a,
+    ...Object.fromEntries(Object.keys(b).map(key => Object.keys(a).includes(key) ? [key, operation(a[key], b[key]) % parseInt(key)] : [key, b[key]]))
+  })
+
+const getTest = (paragraph: string[]): number =>
+  paragraph
+    .filter(line => line.trimStart().startsWith("Test:"))
+    .map(line => parseInt(line.trimStart().split(" ")[3]))[0]
+  
 partTwo()
-
