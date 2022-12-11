@@ -14,6 +14,8 @@
     "day14": "ts-node 14_extended_polymerization/main.ts $1",
     "day15": "ts-node 15_chiton/main.ts $1",
     "day16": "ts-node 16_packet_decoder/main.ts $1",
-    "day19": "ts-node 19_beacon_scanner/main.ts "
+    "day17": "ts-node 17_trick_shot/main.ts $1",
+    "day18": "ts-node 18_snailfish/main.ts $1",
+    "day19": "ts-node 19_beacon_scanner/main.ts $1"
   }
 }

@@ -12,7 +12,8 @@
     "day6": "ts-node 6_tuning_trouble/main.ts ",
     "day7": "ts-node 7_no_space_left_on_device/main.ts ",
     "day8": "ts-node 8_treetop_tree_house/main.ts ",
-    "day9": "ts-node 9_rope_bridge/main.ts $1"
+    "day9": "ts-node 9_rope_bridge/main.ts $1",
+    "day10": "ts-node 10_cathode_ray_tube/main.ts "
   },
   "author": "",
   "license": "ISC",
