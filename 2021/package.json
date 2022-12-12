@@ -16,6 +16,7 @@
     "day16": "ts-node 16_packet_decoder/main.ts $1",
     "day17": "ts-node 17_trick_shot/main.ts $1",
     "day18": "ts-node 18_snailfish/main.ts $1",
-    "day19": "ts-node 19_beacon_scanner/main.ts $1"
+    "day19": "ts-node 19_beacon_scanner/main.ts $1",
+    "day20": "ts-node 20_trench_map/main.ts $1"
   }
 }
