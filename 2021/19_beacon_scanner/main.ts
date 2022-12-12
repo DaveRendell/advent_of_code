@@ -1,24 +1,37 @@
 import inputFile from "../../utils/inputFile"
 import readParagraphs from "../../utils/readParagraphs"
+import { max } from "../../utils/reducers"
 import { ascending } from "../../utils/sorters"
 
 type ScannerWithId = { id: number, scanner: Scanner }
 
 function partOne() {
-  const alignedScanners = getAlignedScanners()
+  const scanners = readParagraphs(__dirname, inputFile())
+    .map(paragraph => paragraph.slice(1).map(line =>
+      line.split(",").map(v => parseInt(v))))
+  const alignedScanners = getAlignedScanners(scanners)
 
   const alignedBeacons = alignedScanners.flat()
   const uniqueBeacons = alignedBeacons.filter((beacon, i) => !alignedBeacons.slice(i + 1).some(vecEqual(beacon)))
   console.log("(P1) Answer: " + uniqueBeacons.length)
 }
 
-function partTwo() {}
-
-const getAlignedScanners = (): Scanner[] => {
+function partTwo() {
+  // Add a new "beacon" to each scanner at 0, 0, 0 - the scanner itself
   const scanners = readParagraphs(__dirname, inputFile())
     .map(paragraph => paragraph.slice(1).map(line =>
       line.split(",").map(v => parseInt(v))))
+    .map(scanner => [[0, 0, 0], ...scanner])
+  const alignedScanners = getAlignedScanners(scanners)
+  const scannerLocations = alignedScanners.map(scanner => scanner[0])
+  const largestDistance = scannerLocations
+    .flatMap(scanner => scannerLocations
+      .map(other => dist(scanner, other)))
+    .reduce(max)
+  console.log("(P2) Answer: " + largestDistance)
+}
 
+const getAlignedScanners = (scanners: Scanner[]): Scanner[] => {
   const overlapMaps = getOverlapMaps(scanners)
   let alignedScanners: ScannerWithId[] = [{id: 0, scanner: scanners[0]}]
   let unalignedScanners: ScannerWithId[] = scanners.map((scanner, id) => ({scanner, id})).slice(1)
