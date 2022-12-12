@@ -1,10 +1,14 @@
 import inputFile from "../../utils/inputFile"
 import { range } from "../../utils/numbers"
+import { findLowestCosts } from "../../utils/path_finding"
 import readDigitGrid from "../../utils/readDigitGrid"
 
 function partOne() {
   const grid = readDigitGrid(__dirname, inputFile())
-  const lowestRisk = getLowestRiskMap(grid)
+  const lowestRisk = findLowestCosts(
+    grid,
+    [0, 0],
+    (_, [toX, toY]) => grid[toY][toX])
 
   console.log("(P1) Answer: " + lowestRisk.at(-1).at(-1))
 }
@@ -12,35 +16,12 @@ function partOne() {
 function partTwo() {
   const grid = readDigitGrid(__dirname, inputFile())
   const expandedGrid = expandMap(grid)
-  const lowestRisk = getLowestRiskMap(expandedGrid)
+  const lowestRisk = findLowestCosts(
+    expandedGrid,
+    [0, 0],
+    (_, [toX, toY]) => expandedGrid[toY][toX])
   
   console.log("(P2) Answer: " + lowestRisk.at(-1).at(-1))
-}
-
-function getLowestRiskMap(grid: number[][]): number[][] {
-  const width = grid[0].length
-  const height = grid.length
-  var risks = grid.map(row => row.map(() => null))
-  risks[0][0] = 0
-  var updates = [[0, 0]]
-
-  while (updates.length > 0) {
-    var newUpdates = []
-    for (const [u_x, u_y] of updates) {
-      const u_risk = risks[u_y][u_x]
-      const adjacentCells = [[u_x - 1, u_y], [u_x + 1, u_y], [u_x, u_y - 1], [u_x, u_y + 1]]
-        .filter(([i, j]) => i >= 0 && i < width && j >= 0 && j < height)
-      for (const [a_x, a_y] of adjacentCells) {
-        const a_cost = grid[a_y][a_x]
-        if (risks[a_y][a_x] === null || u_risk + a_cost < risks[a_y][a_x]) {
-          risks[a_y][a_x] = u_risk + a_cost
-          newUpdates.push([a_x, a_y])
-        }
-      }
-    }
-    updates = newUpdates
-  }
-  return risks
 }
 
 function expandMap(grid: number[][]): number[][] {
