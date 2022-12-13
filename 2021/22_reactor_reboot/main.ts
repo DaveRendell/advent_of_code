@@ -2,21 +2,21 @@ import readLines from "../../utils/readLines"
 import inputFile from "../../utils/inputFile"
 import { inclusiveRange } from "../../utils/numbers"
 import { ascending } from "../../utils/sorters"
+import { sum } from "../../utils/reducers"
 
-type Reactor = boolean[][][]
+type Range = number[] // [lower, higher]
+type Cuboid = Range[] // [xRange, yRange, zRange]
+type Reactor = Cuboid[] // Currently 'on' cubes
 
 function partOne() {
   const instructions = readLines(__dirname, inputFile())
     .map(parseInstruction)
+  // QQ trim instruction ranges to be in +-50 for p1, currently just
+  // manually removing the ones outside that range...
   
-  const blankReactor: Reactor = inclusiveRange(-50, 50).map(() =>
-    inclusiveRange(-50, 50).map(() =>
-      inclusiveRange(-50, 50).map(() =>
-        false)))
-  
-  const rebootedReactor = instructions.reduce(apply, blankReactor)
+  const rebootedReactor = instructions.reduce(apply, [])
 
-  const onCubes = rebootedReactor.flat(3).filter((cube => cube)).length
+  const onCubes = rebootedReactor.map(volume).reduce(sum)
 
   console.log("(P1) Answer: " + onCubes)
 }
@@ -90,33 +90,44 @@ function partTwo() {
   */
 }
 
+const length = ([lower, higher]: Range): number =>
+  Math.max(higher + 1 - lower, 0)
+
+const volume = ([xRange, yRange, zRange]: Cuboid): number =>
+  length(xRange) * length(yRange) * length(zRange)
+
 interface Instruction {
   state: boolean,
-  ranges: number[][]
+  cuboid: Cuboid
 }
 
 const parseInstruction = (line: string): Instruction => ({
   state: line.startsWith("on"),
-  ranges: line.split(" ")[1].split(",").map(rangeString => 
+  cuboid: line.split(" ")[1].split(",").map(rangeString => 
     rangeString.slice(2).split("..").map(v => parseInt(v)).sort(ascending))
 })
 
 const apply = (
   reactor: Reactor,
-  {
-    state,
-    ranges: [xRange, yRange, zRange]
-  }: Instruction
-): Reactor =>
-  inclusiveRange(-50, 50).map(x =>
-    inclusiveRange(-50, 50).map(y =>
-      inclusiveRange(-50, 50).map(z =>
-        (inRange(xRange)(x) && inRange(yRange)(y) && inRange(zRange)(z))
-            ? state
-            : reactor[x + 50][y + 50][z + 50])))
+  { state, cuboid }: Instruction
+): Reactor => [
+  ...reactor.flatMap(splitAndRemove(cuboid)),
+  ...(state ? [cuboid] : [])
+]
 
+const splitAndRemove = (removedCuboid: Cuboid) => (cuboid: Cuboid): Cuboid[] =>
+  { throw new Error("QQ")}
+
+// May be useful?
 const inRange = ([lower, higher]: number[]) => (value: number): boolean =>
   value >= lower && value <= higher
+
+const rangesFullyOverlap = ([[l1, h1], [l2, h2]]: number[][]): boolean =>
+  (l1 <= l2 && h1 >= h2) || (l2 <= l1 && h2 >= h1)
+
+const rangesOverlap = ([[l1, h1], [l2, h2]]: number[][]): boolean =>
+  !(l1 > h2 || l2 > h1)
+
 
 partOne()
 partTwo()
