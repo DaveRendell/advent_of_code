@@ -109,14 +109,34 @@ const parseInstruction = (line: string): Instruction => ({
 
 const apply = (
   reactor: Reactor,
-  { state, cuboid }: Instruction
-): Reactor => [
-  ...reactor.flatMap(splitAndRemove(cuboid)),
-  ...(state ? [cuboid] : [])
-]
+  { state, cuboid }: Instruction,
+  i: number
+): Reactor => {
+  console.log(i)
+  return[
+    ...reactor.flatMap(splitAndRemove(cuboid)),
+    ...(state ? [cuboid] : [])
+  ]
+}
 
-const splitAndRemove = (removedCuboid: Cuboid) => (cuboid: Cuboid): Cuboid[] =>
-  { throw new Error("QQ")}
+const splitAndRemove = (removedCuboid: Cuboid) => (cuboid: Cuboid): Cuboid[] => {
+  const [[x0Min, x0Max], [y0Min, y0Max], [z0Min, z0Max]] = cuboid
+  const [[x1Min, x1Max], [y1Min, y1Max], [z1Min, z1Max]] = removedCuboid
+  if (!overlaps(removedCuboid, cuboid)) {
+    return [cuboid]
+  }
+  return [
+    [[x0Min, x0Max], [y0Min, y0Max], [z0Min, z1Min - 1]],
+    [[x0Min, x0Max], [y0Min, y1Min - 1], [z1Min, z1Max]],
+    [[x0Min, x1Min - 1], [y1Min, y1Max], [z1Min, z1Max]],
+    [[x1Max + 1, x0Min], [y1Min, y1Max], [z1Min, z1Max]],
+    [[x0Min, x0Max], [y1Max + 1, y0Max], [z1Min, z1Max]],
+    [[x0Min, x0Max], [y0Min, y0Max], [z1Max + 1, z0Max]],
+  ].filter(c => volume(c) > 0)
+}
+
+const overlaps = ([x1, y1, z1]: Cuboid, [x2, y2, z2]: Cuboid): boolean =>
+  rangesOverlap(x1, x2) && rangesOverlap(y1, y2) && rangesOverlap(z1, z2)
 
 // May be useful?
 const inRange = ([lower, higher]: number[]) => (value: number): boolean =>
@@ -125,9 +145,14 @@ const inRange = ([lower, higher]: number[]) => (value: number): boolean =>
 const rangesFullyOverlap = ([[l1, h1], [l2, h2]]: number[][]): boolean =>
   (l1 <= l2 && h1 >= h2) || (l2 <= l1 && h2 >= h1)
 
-const rangesOverlap = ([[l1, h1], [l2, h2]]: number[][]): boolean =>
+const rangesOverlap = ([l1, h1]: number[], [l2, h2]: number[]): boolean =>
   !(l1 > h2 || l2 > h1)
 
+const getCoords = ([[xMin, xMax], [yMin, yMax], [zMin, zMax]]: Cuboid): number[][] =>
+  inclusiveRange(xMin, xMax).map(x =>
+    inclusiveRange(yMin, yMax).map(y =>
+      inclusiveRange(zMin, zMax).map(z =>
+        [x, y, z]))).flat(2)
 
 partOne()
 partTwo()
