@@ -1,6 +1,6 @@
 import readLines from "../utils/readLines"
 import inputFile from "../utils/inputFile"
-import { findLowestCosts } from "../utils/path_finding"
+import { findLowestCosts } from "../utils/pathFinding"
 import { range } from "../utils/numbers"
 import { ascending } from "../utils/sorters"
 

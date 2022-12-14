@@ -1,6 +1,6 @@
 import inputFile from "../../utils/inputFile"
 import { range } from "../../utils/numbers"
-import { findLowestCosts } from "../../utils/path_finding"
+import { findLowestCosts } from "../../utils/pathFinding"
 import readDigitGrid from "../../utils/readDigitGrid"
 
 function partOne() {
