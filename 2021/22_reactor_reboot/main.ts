@@ -9,10 +9,8 @@ type Cuboid = Range[] // [xRange, yRange, zRange]
 type Reactor = Cuboid[] // Currently 'on' cubes
 
 function partOne() {
-  const instructions = readLines(__dirname, inputFile())
-    .map(parseInstruction)
-  // QQ trim instruction ranges to be in +-50 for p1, currently just
-  // manually removing the ones outside that range...
+  const instructions = readLines(__dirname, inputFile()).map(parseInstruction)
+    .map(({cuboid, state}) => ({ state, cuboid: clamp([-50, 50])(cuboid) }))
   
   const rebootedReactor = instructions.reduce(apply, [])
 
@@ -22,72 +20,13 @@ function partOne() {
 }
 
 function partTwo() {
-  /*
-  OK so how to do...
-  Think about 2d to make it easier to reason
+  const instructions = readLines(__dirname, inputFile()).map(parseInstruction)
 
-  -x--
-  -x--
-  -x--
-  ----
+  const rebootedReactor = instructions.reduce(apply, [])
 
-  ----
-  xxx-
-  xxx-
-  ----
+  const onCubes = rebootedReactor.map(volume).reduce(sum)
 
-  ----
-  ----
-  -o--
-  ----
-
-  want =>
-
-  oxoo
-  xxxo
-  xoxo
-  oooo
-
-  (1, 1)x(0, 2) =>
-    (1, 1)x(0, 2) [5]
-    [5]
-  (0, 2)x(1, 2) =>
-    (1, 1)x(0, 0) [1]
-    (0, 2)x(1, 2) [6]
-    [7]
-  (1, 1)o(2, 2) =>
-    (1, 1)x(1, 2) ->
-    (1, 1)x(0, 0) [1]
-    (0, 0)x(1, 2) [2]
-    (1, 1)x(1, 1) [1]
-    (2, 2)x(1, 2) [2]
-    [7]
-    Figure out nice algorithms for splitting up cubes
-    One for adding, one for removing
-
-    (x0_min, x0_max) x (y0_min, y0_max)
-    (x1_min, x1_max) x (y1_min, y1_max)
-    if old fully contains new:
-      < filter out this case first>
-    if new fully contains old:
-      new
-    if overlaps(x0, x1) and overlaps(y0, y1):
-      (x0_min, x1_min - 1) x (y0_min, y0_max)
-      (max(x0_min, x1_min), min(x0_max, x1_max))     x (y0_min, y1_min - 1)
-      (max(x0_min, x1_min), min(x0_max, x1_max))     x (y1_max + 1, y0max)
-      (x1_max+1, x0max)    x (y0_min, y0_max)
-      filter out non existant rectangles
-    else
-      (x1_min, x1_max) x (y1_min, y1_max)
-    
-    add new to end
-    Oh! Neat part about this is for `off` commands you can do the exact same
-    algorithm, just don't add `new` at the end!
-
-    make a helper function for measuring cuboids that deals with reverse ranges and
-    measures them as 0
-
-  */
+  console.log("(P2) Answer: " + onCubes)
 }
 
 const length = ([lower, higher]: Range): number =>
@@ -107,17 +46,15 @@ const parseInstruction = (line: string): Instruction => ({
     rangeString.slice(2).split("..").map(v => parseInt(v)).sort(ascending))
 })
 
+// apply([[[1, 5], [1, 2], [1, 2]]], {state: true, cuboid: [[3, 4], [1, 2], [1, 2]]}) -> wrong answer
 const apply = (
   reactor: Reactor,
   { state, cuboid }: Instruction,
   i: number
-): Reactor => {
-  console.log(i)
-  return[
+): Reactor => [
     ...reactor.flatMap(splitAndRemove(cuboid)),
     ...(state ? [cuboid] : [])
   ]
-}
 
 const splitAndRemove = (removedCuboid: Cuboid) => (cuboid: Cuboid): Cuboid[] => {
   const [[x0Min, x0Max], [y0Min, y0Max], [z0Min, z0Max]] = cuboid
@@ -127,16 +64,19 @@ const splitAndRemove = (removedCuboid: Cuboid) => (cuboid: Cuboid): Cuboid[] => 
   }
   return [
     [[x0Min, x0Max], [y0Min, y0Max], [z0Min, z1Min - 1]],
-    [[x0Min, x0Max], [y0Min, y1Min - 1], [z1Min, z1Max]],
-    [[x0Min, x1Min - 1], [y1Min, y1Max], [z1Min, z1Max]],
-    [[x1Max + 1, x0Min], [y1Min, y1Max], [z1Min, z1Max]],
-    [[x0Min, x0Max], [y1Max + 1, y0Max], [z1Min, z1Max]],
+    [[x0Min, x0Max], [y0Min, y1Min - 1], [Math.max(z0Min, z1Min), Math.min(z0Max, z1Max)]],
+    [[x0Min, x1Min - 1], [Math.max(y0Min, y1Min), Math.min(y0Max, y1Max)], [Math.max(z0Min, z1Min), Math.min(z0Max, z1Max)]],
+    [[x1Max + 1, x0Max], [Math.max(y0Min, y1Min), Math.min(y0Max, y1Max)], [Math.max(z0Min, z1Min), Math.min(z0Max, z1Max)]],
+    [[x0Min, x0Max], [y1Max + 1, y0Max], [Math.max(z0Min, z1Min), Math.min(z0Max, z1Max)]],
     [[x0Min, x0Max], [y0Min, y0Max], [z1Max + 1, z0Max]],
   ].filter(c => volume(c) > 0)
 }
 
 const overlaps = ([x1, y1, z1]: Cuboid, [x2, y2, z2]: Cuboid): boolean =>
   rangesOverlap(x1, x2) && rangesOverlap(y1, y2) && rangesOverlap(z1, z2)
+
+const clamp = ([lowerClamp, higherClamp]: number[]) => (cuboid: Cuboid): Cuboid =>
+  cuboid.map(([lower, higher]) => [Math.max(lower, lowerClamp), Math.min(higher, higherClamp)])
 
 // May be useful?
 const inRange = ([lower, higher]: number[]) => (value: number): boolean =>
