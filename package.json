@@ -16,7 +16,8 @@
     "day10": "ts-node 10_cathode_ray_tube/main.ts ",
     "day11": "ts-node 11_monkey_in_the_middle/main.ts ",
     "day12": "ts-node 12_hill_climbing_algorithm/main.ts ",
-    "day13": "ts-node 13_distress_signal/main.ts "
+    "day13": "ts-node 13_distress_signal/main.ts ",
+    "day14": "ts-node 14_regolith_reservoir/main.ts "
   },
   "author": "",
   "license": "ISC",
