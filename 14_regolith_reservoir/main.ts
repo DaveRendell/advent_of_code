@@ -1,6 +1,6 @@
 import readLines from "../utils/readLines"
 import inputFile from "../utils/inputFile"
-import { windows } from "../utils/reducers"
+import { max, windows } from "../utils/reducers"
 import { ascending } from "../utils/sorters"
 
 type Point = number[]
@@ -10,6 +10,31 @@ function partOne() {
   const lines = readLines(__dirname, inputFile()).flatMap(parseLines)
 
   let settledSand: Point[] = []
+  
+  let lastSandSettled = true
+  while(lastSandSettled) {
+    lastSandSettled = dropSand(lines, settledSand)
+  }
+
+  console.log("(P1) Answer: " + settledSand.length)
+}
+
+function partTwo() {
+  const lines = readLines(__dirname, inputFile()).flatMap(parseLines)
+  const floorHeight = lines.flat().map(([_, y]) => y).reduce(max) + 2
+  const floor = [[-Infinity, floorHeight], [Infinity, floorHeight]]
+
+  let settledSand: Point[] = []
+  
+  let lastSandSettled = true
+  while(lastSandSettled && !settledSand.some(([x, y]) => x === 500 && y === 0)) {
+    lastSandSettled = dropSand([...lines, floor], settledSand)
+  }
+
+  console.log("(P2) Answer: " + settledSand.length)
+}
+
+const dropSand = (lines: Line[], settledSand: Point[]): boolean => {
   const canMoveToPoint = ([x, y]: Point): boolean => {
     const settled = settledSand.find(([i, j]) => i === x && j === y)
     const line = lines.find(line => pointIsOnLine(line)([x, y]))
@@ -18,42 +43,33 @@ function partOne() {
   const notFallingIntoAbyss = ([_, y]: Point): boolean =>
     lines.some(line => line.some(([_, j]) => j > y))
 
-
-  let lastSandSettled = true
-  while(lastSandSettled) {
-    lastSandSettled = false
-    let sand = [500, 0]
-    let canMove = true
+  let sand = [500, 0]
+  let canMove = true
+  while(canMove) {
+    canMove = false
     if (notFallingIntoAbyss(sand)) {
-      while(canMove) {
-        const [x, y] = sand
-        canMove = false
-        // Is there something below the sand?
-        if (canMoveToPoint([x, y + 1])) {
+      const [x, y] = sand
+      if (canMoveToPoint([x, y + 1])) {
+        canMove = true
+        sand = [x, y + 1]
+      } else {
+        if (canMoveToPoint([x - 1, y + 1])) {
           canMove = true
-          sand = [x, y + 1]
+          sand = [x - 1, y + 1]
         } else {
-          if (canMoveToPoint([x - 1, y + 1])) {
+          if (canMoveToPoint([x + 1, y + 1])) {
             canMove = true
-            sand = [x - 1, y + 1]
+            sand = [x + 1, y + 1]
           } else {
-            if (canMoveToPoint([x + 1, y + 1])) {
-              canMove = true
-              sand = [x + 1, y + 1]
-            } else {
-              lastSandSettled = true
-              settledSand.push(sand)
-            }
+            settledSand.push(sand)
+            return true
           }
         }
       }
-    }
+    } else { return false }
   }
-
-  console.log("(P1) Answer: " + settledSand.length)
 }
 
-function partTwo() {}
 
 const parseLines = (line: string): Line[] =>
   line.split(" -> ")
