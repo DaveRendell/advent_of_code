@@ -1,11 +1,18 @@
+inp z
 inp w
-add z w
-mod z 2
-div w 2
+mul x 0
+add x z
+mod x 26
+add x -6
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
 add y w
-mod y 2
-div w 2
-add x w
-mod x 2
-div w 2
-mod w 2
+add y 14
+mul y x
+add z y

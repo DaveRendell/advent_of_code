@@ -1,92 +1,69 @@
-import readLines from "../../utils/readLines"
-import inputFile from "../../utils/inputFile"
 
-function partOne() {
-  const instructions = readLines(__dirname, inputFile())
+// https://www.juliabloggers.com/advent-of-code-2021-day-24/
+const blocks = [
+  { opType: 1, correction: 12, offset: 4 }, //AAAA 0
+  { opType: 1, correction: 11, offset: 10 }, //BBBB 1
 
-  // let notFoundYet = true
-  // let modelNumber = 99999999999999
-  // while(notFoundYet) {
-  //   modelNumber--
-  //   console.log(modelNumber)
-  //   const inputs = [...modelNumber.toString()].map(x => parseInt(x))
-  //   if (!inputs.some(x => x === 0)) {
-  //     const { registers: {z: result } } = instructions.reduce(
-  //       apply("off"),
-  //       { registers: { w: 0, x: 0, y: 0, z: 0 }, inputs })
-  //     if (result === 0) { notFoundYet = false }
-  //   }    
-  // }
+  { opType: 1, correction: 14, offset: 12 }, //CCCC 2
+  { opType: 26, correction: -6, offset: 14 }, //CCCC 3
 
-  // [3] == [2] + 6
-  // [6] == [5] + 7
-  // [9] == [8] + 3
-  // Guess?: [12] == [11] + 1
-  // Still doesn't get to zero though... not sure what I'm missing
-  const modelNumber = 99179189149129
-  const inputs = [...modelNumber.toString()].map(x => parseInt(x))
-  instructions.reduce(
-          apply("print"),
-          { registers: { w: 0, x: 0, y: 0, z: 0 }, inputs })
+  { opType: 1, correction: 15, offset: 6 }, //DDDD 4
+  { opType: 1, correction: 12, offset: 16 }, //EEEE 5
 
-  console.log("(P1) Answer: " + modelNumber)
-}
+  { opType: 26, correction: -9, offset: 1 }, //EEEE 6
+  { opType: 1, correction: 14, offset: 7 }, //FFFF 7
 
-function partTwo() {}
+  { opType: 1, correction: 14, offset: 8 }, //GGGG 8
+  { opType: 26, correction: -5, offset: 11 }, //GGGG 9
 
-interface State {
-  registers: {w: number, x: number, y: number, z: number },
-  inputs: number[]
-}
+  { opType: 26, correction: -9, offset: 8 }, //FFFF 10
+  { opType: 26, correction: -5, offset: 3 }, //DDDD 11
 
-type DebugMode = "off" | "print"
+  { opType: 26, correction: -2, offset: 1 }, //BBBB 12
+  { opType: 26, correction: -7, offset: 8 }, //AAAA 13
+]
 
-const apply = (debugMode: DebugMode) => (
-  { registers, inputs }: State,
-  instruction: string,
-  index: number
-): State => {
-  const {w, x, y, z} = registers
-  let newState = { registers, inputs }
-  if (instruction.startsWith("inp")) {
-    const register = instruction.split(" ")[1]
-    newState = { registers: { ...registers, [register]: inputs[0] }, inputs: inputs.slice(1) }
-  }
+/*
+0  9  4
+1  1  1
+2  3  1
+3  9  7
+4  8  1
+5  2  1
+6  9  8
+7  9  3
+8  6  1
+9  9  4
+10 7  1
+11 9  2
+12 9  9
+13 6  1
+*/
 
-  const binaryOperation = (operation: (a: number, b: number) => number): State => {
-    const targetVariable = instruction.split(" ")[1]
-    const operandString = instruction.split(" ")[2]
-    const operand1: number = registers[targetVariable]
-    const operand2: number = "wxyz".includes(operandString)
-      ? registers[operandString]
-      : parseInt(operandString)
-    const result = operation(operand1, operand2)
-    return { registers: { ...registers, [targetVariable]: result }, inputs }
-  }
+// AAA
+// offset<0> + correction<13> == -3
+// w<0> - 3 == w<13>
 
-  if (instruction.startsWith("add")) {
-    newState = binaryOperation((a, b) => a + b)
-  }
-  if (instruction.startsWith("mul")) {
-    newState = binaryOperation((a, b) => a * b)
-  }
-  if (instruction.startsWith("div")) {
-    newState = binaryOperation((a, b) => Math.floor(a / b))
-  }
-  if (instruction.startsWith("mod")) {
-    newState = binaryOperation((a, b) => a % b)
-  }
-  if (instruction.startsWith("eql")) {
-    newState = binaryOperation((a, b) => a === b ? 1 : 0)
-  }
-  if (debugMode === "print") {
-    const pre = JSON.stringify({ registers, inputs }) === JSON.stringify(newState)
-      ? ""
-      : "\x1b[32m"
-    console.log(`${pre}${index + 1}: ${instruction.padEnd(12)}<- ${JSON.stringify(newState.registers)}, in: ${JSON.stringify(newState.inputs)}\x1b[0m`)
-  }
-  return newState
-}
+// BBB
+// offset<1> + correction<12> == 8
+// w<1> + 8 = w<12>
 
-partOne()
-partTwo()
+// CCC
+// offset<2> + correction<3> === 6
+// w<2> + 6 == w<3>
+
+// DDD
+// offset<4> + correction<11> === 1
+// w<4> + 1 == w<11>
+
+// EEE
+// offset<5> + correction<6> === 7
+// w<5> + 7 = w<6>
+
+// FFF
+// offset<7> + correction<10> === -2
+// w<7> - 2 == w<10>
+
+// GGG
+// offset<8> + correction<9> === 3
+// w<8> + 3 == w<9>
