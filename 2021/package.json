@@ -20,6 +20,7 @@
     "day20": "ts-node 20_trench_map/main.ts $1",
     "day21": "ts-node 21_dirac_dice/main.ts ",
     "day22": "ts-node 22_reactor_reboot/main.ts $1",
-    "day23": "ts-node 23_amphipod/main.ts "
+    "day23": "ts-node 23_amphipod/main.ts ",
+    "day24": "ts-node 24_arithmetic_logic_unit/main.ts "
   }
 }
