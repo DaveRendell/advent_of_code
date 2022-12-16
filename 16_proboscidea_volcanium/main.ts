@@ -1,7 +1,6 @@
 import readLines from "../utils/readLines"
 import inputFile from "../utils/inputFile"
-import { groupBy, max, sum } from "../utils/reducers"
-import { descending } from "../utils/sorters"
+import { max, sum } from "../utils/reducers"
 
 function partOne() {
   const valves = readLines(__dirname, inputFile()).reduce(parseValve, {})
@@ -14,18 +13,12 @@ function partOne() {
   console.log("Distance map between non zero valves (and start) calculated")
   const paths = getPaths(distances)("AA", 30, ["AA"])
   console.log(paths.length + " possible paths between valves found")
-
-  console.log("(P1) Answer: ")
+  
+  const maxPressure = paths.map(evalutatePath(valves)).reduce(max)
+  console.log("(P1) Answer: " + maxPressure)
 }
 
 function partTwo() {}
-
-type TurnOpened = Record<string, number>
-
-interface State {
-  position: string,
-  openValves: TurnOpened,
-}
 
 interface Valve {
   flowRate: number,
@@ -34,6 +27,7 @@ interface Valve {
 
 type ValveMap = Record<string, Valve>
 type DistanceMap = Record<string, number>
+type Path = [string, number][]
 
 
 const parseValve = (map: ValveMap, line: string): ValveMap => {
@@ -42,22 +36,6 @@ const parseValve = (map: ValveMap, line: string): ValveMap => {
   const tunnels = tunnelStrings.join("").split(",")
   return { ...map, [name]: {flowRate, tunnels } }
 }
-
-const getPaths = (distances: {[k: string]: DistanceMap}) =>
-  (from: string, minutesLeft: number, visited: string[]): string[][] => {
-    if (minutesLeft <= 0) { return [[from]] }
-    
-    const options = Object.keys(distances[from])
-      .filter(next => !visited.includes(next))
-      .filter(next => distances[from][next] <= minutesLeft)
-    
-    if (options.length === 0) { return [[from]] }
-
-    return options
-      .flatMap(next =>
-        getPaths(distances)(next, minutesLeft - distances[from][next] - 1, [...visited, next])
-          .map(path => [from, ...path]))
-  }
 
 const movementCosts = (valves: ValveMap) => (from: string): DistanceMap=> {
   let costs = { [from]: 0 }
@@ -81,6 +59,25 @@ const movementCosts = (valves: ValveMap) => (from: string): DistanceMap=> {
     .filter(([key]) => valves[key].flowRate > 0)
     .filter(([key]) => key !== from))
 }
+
+const getPaths = (distances: {[k: string]: DistanceMap}) =>
+  (from: string, minutesLeft: number, visited: string[]): Path[] => {
+    
+    const options = Object.keys(distances[from])
+      .filter(next => !visited.includes(next))
+      .filter(next => distances[from][next] <= minutesLeft)
+    
+    if (options.length === 0) { return [[[from, Math.max(minutesLeft, 0)]]] }
+
+    return options
+      .flatMap(next =>
+        getPaths(distances)(next, minutesLeft - distances[from][next] - 1, [...visited, next])
+          .map(path => [[from, minutesLeft] as [string, number], ...path]))
+  }
+
+const evalutatePath = (valves: ValveMap) => (path: Path): number =>
+  path.map(([name, minutesLeft]) => valves[name].flowRate * minutesLeft)
+  .reduce(sum)
 
 partOne()
 partTwo()
