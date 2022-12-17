@@ -19,7 +19,8 @@
     "day13": "ts-node 13_distress_signal/main.ts ",
     "day14": "ts-node 14_regolith_reservoir/main.ts ",
     "day15": "ts-node 15_beacon_exclusion_zone/main.ts ",
-    "day16": "ts-node 16_proboscidea_volcanium/main.ts "
+    "day16": "ts-node 16_proboscidea_volcanium/main.ts ",
+    "day17": "ts-node 17_pyroclastic_flow/main.ts "
   },
   "author": "",
   "license": "ISC",
