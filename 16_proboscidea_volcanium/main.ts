@@ -1,6 +1,7 @@
 import readLines from "../utils/readLines"
 import inputFile from "../utils/inputFile"
-import { max, min, sum } from "../utils/reducers"
+import { max, sum } from "../utils/reducers"
+import { descending } from "../utils/sorters"
 
 function partOne() {
   const valves = readLines(__dirname, inputFile()).reduce(parseValve, {})
@@ -10,13 +11,9 @@ function partOne() {
       .filter(name => valves[name].flowRate > 0 || name === "AA")
       .map(name => [name, movementCosts(valves)(name)])
   )
-  console.log("Distance map between non zero valves (and start) calculated")
   const paths = getPaths(distances)("AA", 30, ["AA"])
-  console.log(paths.length + " possible paths between valves found")
   
   const maxPressure = paths.map(evalutatePath(valves)).reduce(max)
-  const bestPath = paths.find(p => evalutatePath(valves)(p) === maxPressure)
-  console.log(bestPath)
   console.log("(P1) Answer: " + maxPressure)
 }
 
@@ -28,25 +25,30 @@ function partTwo() {
       .filter(name => valves[name].flowRate > 0 || name === "AA")
       .map(name => [name, movementCosts(valves)(name)])
   )
-  console.log("Distance map between non zero valves (and start) calculated")
-  const multiPaths = getMultiPaths(distances)({ 
-    minutesLeft: 26, 
-    actors: [{ target: "AA", travelTime: 0 }, { target: "AA", travelTime: 0 }], 
-    openedValves: [] 
-  }, [])
-  console.log(multiPaths.length + " possible paths between valves found")
+  const paths = getPaths(distances)("AA", 26, ["AA"])
 
-  const maxPressure = multiPaths
-    .map(({openedValves}) =>
-      evalutatePath(valves)(openedValves.map(({name, minutesOpen}) => [name , minutesOpen])))
+  const sortedPathsWithScores = paths
+    .map(path => ({ path, score: evalutatePath(valves)(path) }))
+    .sort(({ score: s1 }, { score: s2 }) => descending(s1, s2))
+  
+  const { path: bestPath, score: bestScore } = sortedPathsWithScores[0]
+  const { score: bestNonOverlapping } = sortedPathsWithScores
+    .filter(({path}) => !pathsOverlap(bestPath)(path))[0]
+  
+  const lowerBound = bestScore + bestNonOverlapping
+
+  const maxPressure = sortedPathsWithScores
+    .flatMap(({ path: path1, score: score1 }) => sortedPathsWithScores
+      .filter(({ score: score2 }) => score1 + score2 >= lowerBound)
+      .filter(({ path: path2 }) => !pathsOverlap(path1)(path2))
+      .map(({ score: score2 }) => score1 + score2))
     .reduce(max)
   
-  const bestPath = multiPaths.find(({openedValves}) =>
-    evalutatePath(valves)(openedValves.map(({name, minutesOpen}) => [name , minutesOpen])) === maxPressure)
-  console.log(JSON.stringify(bestPath, null, 2))
   console.log("(P2) Answer: " + maxPressure)
-  // 2650 too high
 }
+
+const pathsOverlap = (path1: Path) => (path2: Path): boolean =>
+  path1.slice(1).some(([name1]) => path2.some(([name2]) => name1 === name2))
 
 interface Valve {
   flowRate: number,
@@ -57,10 +59,6 @@ type ValveMap = Record<string, Valve>
 type DistanceMap = Record<string, number>
 type DistanceTable = Record<string, DistanceMap>
 type Path = [string, number][]
-type Position = { target: string, travelTime: number }
-type OpenedValve = { name: string, minutesOpen: number, openedBy: number }
-type MultiPath = { minutesLeft: number, actors: Position[], openedValves: OpenedValve[] }
-
 
 const parseValve = (map: ValveMap, line: string): ValveMap => {
   const [,name,,,rateString,,,,,...tunnelStrings] = line.split(" ")
@@ -92,42 +90,13 @@ const movementCosts = (valves: ValveMap) => (from: string): DistanceMap=> {
     .filter(([key]) => key !== from))
 }
 
-const getMultiPaths = (distances: DistanceTable) =>
-  ({ minutesLeft, actors, openedValves }: MultiPath, visited: string[]): MultiPath[] => {
-    const firstActorAtDest = actors.findIndex(({travelTime: minutesLeft}) => minutesLeft === 0)
-    if (firstActorAtDest === -1) {
-      throw new Error("Panic!")
-    }
-    
-    const target = actors[firstActorAtDest].target
-    const options = Object.keys(distances[target])
-      .filter(next => !visited.includes(next))
-      .filter(next => distances[target][next] + 1 <= minutesLeft)
-      .map(next => ({ target: next, travelTime: distances[target][next] + 1 }))
-    
-    if (options.length === 0) { return [{ minutesLeft , actors, openedValves: [...openedValves, { name: target, minutesOpen: minutesLeft, openedBy: firstActorAtDest }] }] }
-
-    return options.flatMap(option => {
-      const newActors = actors
-        .map((actor, i) => i === firstActorAtDest ? option : actor)
-      const nextArrival = newActors.map(({travelTime}) => travelTime).reduce(min)
-      const nextDestination = newActors.find(({travelTime}) => travelTime === nextArrival)
-      
-      return getMultiPaths(distances)({
-        minutesLeft: minutesLeft - nextArrival,
-        actors: newActors.map(a => ({ ...a, travelTime: a.travelTime - nextArrival})),
-        openedValves: [...openedValves, { name: target, minutesOpen: minutesLeft, openedBy: firstActorAtDest }]
-      }, [...visited, option.target])
-    })
-  }
-
 const getPaths = (distances: DistanceTable) =>
   (from: string, minutesLeft: number, visited: string[]): Path[] => {
-    
+
     const options = Object.keys(distances[from])
       .filter(next => !visited.includes(next))
       .filter(next => distances[from][next] <= minutesLeft)
-    
+  
     if (options.length === 0) { return [[[from, Math.max(minutesLeft, 0)]]] }
 
     return options
