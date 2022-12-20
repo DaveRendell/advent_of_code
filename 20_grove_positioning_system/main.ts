@@ -1,62 +1,60 @@
 import readLines from "../utils/readLines"
 import inputFile from "../utils/inputFile"
 import { sum } from "../utils/reducers"
+import { range } from "../utils/numbers"
 
 function partOne() {
   const input = readLines(__dirname, inputFile()).map(x => parseInt(x))
   
-  let sequence = mix(input, input)
+  let ordering = mix(input, range(0, input.length))
+  const mixed = reorder(input, ordering)
 
-  const zeroIndex = sequence.findIndex(x => x === 0)
-  const answer = [
-    sequence[(zeroIndex + 1000) % sequence.length],
-    sequence[(zeroIndex + 2000) % sequence.length],
-    sequence[(zeroIndex + 3000) % sequence.length],
-  ].reduce(sum)
-
-  console.log("(P1) Answer: " + answer)
+  console.log("(P1) Answer: " + coordinateSum(mixed))
 }
 
 function partTwo() {
   const input = readLines(__dirname, inputFile())
     .map(x => 811589153 * parseInt(x))
 
-  let sequence = input
-  console.log(sequence.join(", "))
+  let ordering = range(0, input.length)
   for (let i = 0; i < 10; i++) {
-    sequence = mix(sequence, input)
-    console.log(sequence.join(", "))
+    ordering = mix(input, ordering)
   }
-  const zeroIndex = sequence.findIndex(x => x === 0)
-  const answer = [
-    sequence[(zeroIndex + 1000) % sequence.length],
-    sequence[(zeroIndex + 2000) % sequence.length],
-    sequence[(zeroIndex + 3000) % sequence.length],
-  ]//.reduce(sum)
-  console.log("(P2) Answer: " + answer)
+  const mixed = reorder(input, ordering)
+
+  console.log("(P2) Answer: " + coordinateSum(mixed))
 }
 
-const mix = (input: number[], original: number[]): number[] => {
-  let sequence = input
-    .map(x => [x, false])
-  let cursor = 0
+const mix = (original: number[], positions: number[]): number[] => {
+  let positionInSequence = [...positions]
 
-  //console.log(sequence.map(([x]) => x).join(", "))
-
-  while (cursor < input.length) {
-    if (!sequence[cursor][1]) {
-      const [value] = sequence[cursor] as [number, boolean]
-      sequence[cursor][1] = true
-      const newIndex = positiveMod(cursor + value - 1, input.length - 1) + 1
-      sequence.splice(newIndex, 0, sequence.splice(cursor, 1)[0])
-      //console.log(sequence.map(([x]) => x).join(", "))
-    } else { cursor++ }
+  for (let cursor = 0; cursor < original.length; cursor++) {
+    const value = original[cursor]
+    const position = positionInSequence[cursor]
+    const newPosition = positiveMod(position + value - 1, original.length - 1) + 1
+    positionInSequence = positionInSequence.map(p => isBetween(position, newPosition)(p)
+          ? p + Math.sign(position - newPosition)
+          : p)
+    positionInSequence[cursor] = newPosition
   }
-  return sequence.map(([x]) => x as number)
+  return positionInSequence
 }
 
 const positiveMod = (n: number, m: number): number =>
   ((n % m) + m) % m
+
+const isBetween = (a: number, b: number) => (x: number): boolean =>
+  Math.min(a, b) <= x && x <= Math.max(a, b)
+
+const reorder = (input: number[], ordering: number[]) =>
+  range(0, input.length).map(i => input[ordering.findIndex(j => j === i)])
+
+const coordinateSum = (sequence: number[]): number => {
+  const zeroIndex = sequence.findIndex(x => x === 0)
+  return [1000, 2000, 3000]
+    .map(n => sequence[(n + zeroIndex) % sequence.length])
+    .reduce(sum)
+}
 
 partOne()
 partTwo()
