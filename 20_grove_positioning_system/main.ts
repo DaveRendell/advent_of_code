@@ -8,9 +8,8 @@ function partOne() {
     .map(x => parseInt(x))
   
   let ordering = input.reduce(mix, range(0, input.length))
-  const mixed = reorder(input, ordering)
 
-  console.log("(P1) Answer: " + coordinateSum(mixed))
+  console.log("(P1) Answer: " + coordinateSum(input, ordering))
 }
 
 function partTwo() {
@@ -21,9 +20,8 @@ function partTwo() {
   for (let i = 0; i < 10; i++) {
     ordering = input.reduce(mix, ordering)
   }
-  const mixed = reorder(input, ordering)
 
-  console.log("(P2) Answer: " + coordinateSum(mixed))
+  console.log("(P2) Answer: " + coordinateSum(input, ordering))
 }
 
 const mix = (positions: number[], value: number, cursor: number): number[] => {
@@ -42,13 +40,10 @@ const positiveMod = (n: number, m: number): number =>
 const isBetween = (a: number, b: number) => (x: number): boolean =>
   Math.min(a, b) <= x && x <= Math.max(a, b)
 
-const reorder = (input: number[], ordering: number[]) =>
-  range(0, input.length).map(i => input[ordering.findIndex(j => j === i)])
-
-const coordinateSum = (sequence: number[]): number => {
-  const zeroIndex = sequence.findIndex(x => x === 0)
+const coordinateSum = (input: number[], ordering: number[]): number => {
+  const zeroIndex = ordering[input.findIndex(x => x === 0)]
   return [1000, 2000, 3000]
-    .map(n => sequence[(n + zeroIndex) % sequence.length])
+    .map(n => input[ordering.findIndex(j => j === (zeroIndex + n) % input.length)])
     .reduce(sum)
 }
 
