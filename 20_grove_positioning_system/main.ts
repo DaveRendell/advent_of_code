@@ -4,9 +4,10 @@ import { sum } from "../utils/reducers"
 import { range } from "../utils/numbers"
 
 function partOne() {
-  const input = readLines(__dirname, inputFile()).map(x => parseInt(x))
+  const input = readLines(__dirname, inputFile())
+    .map(x => parseInt(x))
   
-  let ordering = mix(input, range(0, input.length))
+  let ordering = input.reduce(mix, range(0, input.length))
   const mixed = reorder(input, ordering)
 
   console.log("(P1) Answer: " + coordinateSum(mixed))
@@ -18,26 +19,21 @@ function partTwo() {
 
   let ordering = range(0, input.length)
   for (let i = 0; i < 10; i++) {
-    ordering = mix(input, ordering)
+    ordering = input.reduce(mix, ordering)
   }
   const mixed = reorder(input, ordering)
 
   console.log("(P2) Answer: " + coordinateSum(mixed))
 }
 
-const mix = (original: number[], positions: number[]): number[] => {
-  let positionInSequence = [...positions]
-
-  for (let cursor = 0; cursor < original.length; cursor++) {
-    const value = original[cursor]
-    const position = positionInSequence[cursor]
-    const newPosition = positiveMod(position + value - 1, original.length - 1) + 1
-    positionInSequence = positionInSequence.map(p => isBetween(position, newPosition)(p)
-          ? p + Math.sign(position - newPosition)
-          : p)
-    positionInSequence[cursor] = newPosition
-  }
-  return positionInSequence
+const mix = (positions: number[], value: number, cursor: number): number[] => {
+  const position = positions[cursor]
+  const newPosition = positiveMod(position + value - 1, positions.length - 1) + 1
+  const newPositions = positions.map(p => isBetween(position, newPosition)(p)
+    ? p + Math.sign(position - newPosition)
+    : p)
+  newPositions[cursor] = newPosition
+  return newPositions
 }
 
 const positiveMod = (n: number, m: number): number =>
