@@ -59,8 +59,6 @@ const mostGeodes = (blueprint: Blueprint, id: number, time: number): number => {
 
     range(0, 4)
       .filter(resource => resource === GEODE || robots[resource] < maxNeeded[resource])
-      .filter(resource => zip(resources, robots, blueprint[resource]).some(([stock, prod, cost]) =>
-        (stock - prod) < cost))
       .map(resource => [resource, calcTurnsUntilCanBuild(resources, robots)(blueprint[resource])])
        .filter(([_, turns]) => turns < minutesRemaining)
       .map(([resource, turns]): State => ({
@@ -90,11 +88,11 @@ const zip = (...arrays: number[][]): number[][] =>
   arrays[0].map((_, i) => arrays.map(array => array[i]))
 
 const calcTurnsUntilCanBuild = (resources: number[], robots: number[]) => (cost: Cost) =>
-  zip(resources, robots, cost)
+  Math.max(0, zip(resources, robots, cost)
     .map(([re, ro, c]) =>
       Math.ceil((c - re) / ro))
     .filter(x => !isNaN(x))
-    .reduce(max) + 1
+    .reduce(max)) + 1
 
 partOne()
 partTwo()
