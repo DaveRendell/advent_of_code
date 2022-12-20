@@ -7,6 +7,7 @@
     "day5": "ts-node 5_doesnt_he_have_intern_elves_for_this/main.ts $1",
     "day6": "ts-node 6_probably_a_fire_hazard/main.ts $1",
     "day7": "ts-node 7_some_assembly_required/main.ts $1",
-    "day8": "ts-node 8_matchsticks/main.ts "
+    "day8": "ts-node 8_matchsticks/main.ts ",
+    "day9": "ts-node 9_all_in_a_single_night/main.ts "
   }
 }
