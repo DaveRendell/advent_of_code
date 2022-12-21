@@ -1,13 +1,8 @@
 import readLines from "../utils/readLines"
 import inputFile from "../utils/inputFile"
 
-function partOne() {
-  const input = readLines(__dirname, inputFile())
+const input = readLines(__dirname, inputFile())
 
-  console.log("(P1) Answer: ")
-}
+console.log("(P1): " + 0)
 
-function partTwo() {}
-
-partOne()
-partTwo()
+console.log("(P2): " + 0)

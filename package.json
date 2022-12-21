@@ -23,7 +23,8 @@
     "day17": "ts-node 17_pyroclastic_flow/main.ts ",
     "day18": "ts-node 18_boiling_boulders/main.ts ",
     "day19": "ts-node 19_not_enough_minerals/main.ts ",
-    "day20": "ts-node 20_grove_positioning_system/main.ts "
+    "day20": "ts-node 20_grove_positioning_system/main.ts ",
+    "day21": "ts-node 21_monkey_math/main.ts "
   },
   "author": "",
   "license": "ISC",
