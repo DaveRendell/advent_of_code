@@ -24,7 +24,8 @@
     "day18": "ts-node 18_boiling_boulders/main.ts ",
     "day19": "ts-node 19_not_enough_minerals/main.ts ",
     "day20": "ts-node 20_grove_positioning_system/main.ts ",
-    "day21": "ts-node 21_monkey_math/main.ts "
+    "day21": "ts-node 21_monkey_math/main.ts ",
+    "day22": "ts-node 22_monkey_map/main.ts "
   },
   "author": "",
   "license": "ISC",
