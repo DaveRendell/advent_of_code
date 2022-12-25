@@ -9,6 +9,7 @@
     "day7": "ts-node 7_some_assembly_required/main.ts $1",
     "day8": "ts-node 8_matchsticks/main.ts ",
     "day9": "ts-node 9_all_in_a_single_night/main.ts ",
-    "day10": "ts-node 10_elves_look_elves_say/main.ts "
+    "day10": "ts-node 10_elves_look_elves_say/main.ts ",
+    "day11": "ts-node 11_corporate_policy/main.ts "
   }
 }
