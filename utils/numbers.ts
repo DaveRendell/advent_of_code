@@ -11,3 +11,12 @@ export const rangesOverlap = ([[l1, h1], [l2, h2]]: number[][]): boolean =>
 
 export const positiveMod = (n: number, m: number): number =>
   ((n % m) + m) % m
+
+export const lcm = (a: number, b: number): number => {
+  const [l, h] = [Math.min(a, b), Math. max(a, b)]
+  let m = h
+  while (m % l !== 0) {
+    m += h
+  }
+  return m
+}

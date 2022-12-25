@@ -26,7 +26,8 @@
     "day20": "ts-node 20_grove_positioning_system/main.ts ",
     "day21": "ts-node 21_monkey_math/main.ts ",
     "day22": "ts-node 22_monkey_map/main.ts ",
-    "day23": "ts-node 23_unstable_diffusion/main.ts "
+    "day23": "ts-node 23_unstable_diffusion/main.ts ",
+    "day24": "ts-node 24_blizzard_basin/main.ts "
   },
   "author": "",
   "license": "ISC",
