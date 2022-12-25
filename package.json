@@ -27,7 +27,8 @@
     "day21": "ts-node 21_monkey_math/main.ts ",
     "day22": "ts-node 22_monkey_map/main.ts ",
     "day23": "ts-node 23_unstable_diffusion/main.ts ",
-    "day24": "ts-node 24_blizzard_basin/main.ts "
+    "day24": "ts-node 24_blizzard_basin/main.ts ",
+    "day25": "ts-node 25_full_of_hot_air/main.ts "
   },
   "author": "",
   "license": "ISC",
