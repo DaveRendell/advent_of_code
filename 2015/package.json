@@ -12,6 +12,7 @@
     "day10": "ts-node 10_elves_look_elves_say/main.ts ",
     "day11": "ts-node 11_corporate_policy/main.ts ",
     "day12": "ts-node 12_js_abacus_framework_io/main.ts ",
-    "day13": "ts-node 13_knights_of_the_dinner_table/main.ts "
+    "day13": "ts-node 13_knights_of_the_dinner_table/main.ts ",
+    "day14": "ts-node 14_reindeer_olympics/main.ts "
   }
 }
