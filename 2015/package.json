@@ -18,6 +18,7 @@
     "day16": "ts-node 16_aunt_sue/main.ts ",
     "day17": "ts-node 17_no_such_thing_as_too_much/main.ts ",
     "day18": "ts-node 18_like_a_gif_for_your_yard/main.ts ",
-    "day19": "ts-node 19_medicine_for_rudolph/main.ts "
+    "day19": "ts-node 19_medicine_for_rudolph/main.ts ",
+    "day20": "ts-node 20_infinite_elves_and_infinite_houses/main.ts "
   }
 }

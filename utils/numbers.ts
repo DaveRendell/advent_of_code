@@ -1,3 +1,5 @@
+import { ascending } from "./sorters"
+
 export function range(num1: number, num2: number): number[] {
   return Array.from({ length: num2 - num1 }, (_, i) => num1 + i)
 }
@@ -19,4 +21,12 @@ export const lcm = (a: number, b: number): number => {
     m += h
   }
   return m
+}
+
+export const factors = (n: number): number[] => {
+  let out = [1, n]
+  for (let k = 2; k <= n / 2; k++) {
+    if (n % k === 0) { out.push(k) }
+  }
+  return out.sort(ascending)
 }

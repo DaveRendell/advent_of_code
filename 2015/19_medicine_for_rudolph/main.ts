@@ -21,12 +21,6 @@ const replaceList = (input: string, from: string, to: string): string[] =>
     .filter(i => input.slice(i).startsWith(from))
     .map(i => input.slice(0, i) + input.slice(i).replace(from, to))
 
-const findPrecedents = (chemical: string): string[] =>
-  replacements
-    .filter(([_, to]) => chemical.includes(to))
-    .flatMap(([from, to]) => replaceList(chemical, to, from))
-    .filter(x => !x.includes("e") || x.length === 1)
-
 let variant = medicine
 let steps = 0
 
