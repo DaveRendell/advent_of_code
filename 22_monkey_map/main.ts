@@ -159,6 +159,27 @@ const scoreForPosition = (position: Position): number => {
   return 1000 * row + 4 * col + position.direction
 }
 
+/**
+ * _N_
+ * WXE
+ * _S_
+ */
+const getTransition = (face: Face, directionId: number): number[] => {
+  // if there is cube on net in right position, return that, rotation 0
+  // else rescurse to get one in direction + 1, then get transition for that one
+  // in original direction, add 1 to rotation?
+  const [dx, dy] = directions[directionId]
+  const [y0, x0] = face.netPosition
+  const [y, x] = [y0 + dy, x0 + dx]
+  if (net[y] && net[y][x] && net[y][x][0][0] !== " ") {
+    const faceId = faces.findIndex(f => f.netPosition[0] === y && f.netPosition[1] === x)
+    return [faceId, 0]
+  }
+  const [nextFaceId, rotation] = getTransition(face, (directionId + 1) % 4)
+  const [faceId, additionalRotation] = getTransition(faces[nextFaceId], positiveMod(directionId + rotation, 4))
+  return [faceId, positiveMod(rotation + additionalRotation + 1, 4)]
+}
+
 // TODO: calculate the edges...
 const sampleCubeTransitions: Transitions[] = [
   { east: [5, 2], south: [3, 0], west: [2, 3], north: [1, 2] },
@@ -189,6 +210,11 @@ const test: Position = { face: 4, x: 0, y: 0, direction: 2 }
 
 console.log(step(sampleCubeTransitions)(test))
 
-console.log("(P1): " + scoreForPosition(traverse(wrapAroundTransitions)))
+//console.log("(P1): " + scoreForPosition(traverse(wrapAroundTransitions)))
 
-console.log("(P2): " + scoreForPosition(traverse(realCubeTransitions)))
+//console.log("(P2): " + scoreForPosition(traverse(realCubeTransitions)))
+
+console.log(getTransition(faces[0], 0))
+console.log(getTransition(faces[0], 1))
+console.log(getTransition(faces[0], 2))
+console.log(getTransition(faces[0], 3))
