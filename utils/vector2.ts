@@ -1,3 +1,5 @@
+import { positiveMod } from "./numbers"
+
 export default class Vector2 {
   x: number
   y: number
@@ -45,7 +47,17 @@ export default class Vector2 {
         .filter(vector => maxY === undefined || maxY >= vector.y)
   }
 
+  add(other: Vector2): Vector2 {
+    return new Vector2(this.x + other.x, this.y + other.y)
+  }
+
   equals(other: Vector2): boolean {
     return other.x === this.x && other.y === this.y
   }
+
+  static ORIGIN = new Vector2(0, 0)
+  static RIGHT = new Vector2(1, 0)
+  static DOWN = new Vector2(0, 1)
+  static LEFT = new Vector2(-1, 0)
+  static UP = new Vector2(0, -1)
 }

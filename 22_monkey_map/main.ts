@@ -1,8 +1,28 @@
-import readLines from "../utils/readLines"
 import inputFile from "../utils/inputFile"
 import readParagraphs from "../utils/readParagraphs"
 import { chunks, max } from "../utils/reducers"
 import { positiveMod, range } from "../utils/numbers"
+import Vector2 from "../utils/vector2"
+
+interface Face {
+  netPosition: Vector2
+  grid: string[][]
+}
+
+interface Position {
+  face: number
+  faceCoordinates: Vector2
+  directionId: number
+}
+
+interface Edge {
+  faceId: number,
+  rotation: number
+}
+
+type Edges = Edge[] // [east, south, west, north]
+
+const directions = [Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT, Vector2.UP]
 
 const [mapLines, [instructionsString]] = readParagraphs(__dirname, inputFile())
 
@@ -12,13 +32,11 @@ const instructions = instructionsString
   .split("$")
 
 const tileCount = mapLines
-  .map(x => x.split(""))
-  .flat()
+  .flatMap(x => x.split(""))
   .filter(x => x !== " ")
   .length
-const faceLength = Math.sqrt(tileCount / 6)
 
-const directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]
+const faceLength = Math.sqrt(tileCount / 6)
 
 const net = mapLines
   .map(line => line.padEnd(mapLines.map(l=> l.length).reduce(max)))
@@ -26,113 +44,86 @@ const net = mapLines
   .map(lines =>
     range(0, lines[0].length / faceLength)
       .map(i => lines.map(line => line.slice(i * faceLength, (i + 1) * faceLength).split(""))))
-const netWidth = net[0].length
-const netHeight = net.length
 
-
-const vis = net.map(row => range(0, 4).map(k => row.map(grid => grid[k].join("")).join("  ")).join("\n")).join("\n\n")
-
-interface Face {
-  netPosition: number[]
-  grid: string[][]
-}
-
-const faces: Face[] = net.map((row, rowId) => row
-  .map((grid, colId) =>
-    ({ netPosition: [rowId, colId], grid })))
+const faces: Face[] = net.map((row, rowId) => 
+    row.map((grid, colId) =>
+      ({ netPosition: new Vector2(colId, rowId), grid })))
   .flat()
   .filter(({ grid }) => grid[0][0] !== " ")
 
-interface Transitions {
-  east: [number, number]
-  south: [number, number]
-  west: [number, number]
-  north: [number, number]
-}
-
-const wrapAroundTransitions: Transitions[] =
-  faces.map(({ netPosition: [y, x]}) => {
-    const getNextFaceInDirection = ([dx, dy]: number[]): number => {
-      let newX = x
-      let newY = y
-      do {
-        newY = positiveMod(newY + dy, net.length)
-        newX = positiveMod(newX + dx, net[newY].length)
-      } while (net[newY][newX][0][0] === " ")
-      return faces.findIndex(({netPosition: [y2, x2]}) =>
-        x2 === newX && y2 === newY)
+const wrapAroundEdges: Edges[] =
+  faces.map(({ netPosition}) => {
+    const getNextFaceInDirection = (direction: Vector2): number => {
+      let newFace = netPosition
+      do { 
+        newFace = newFace.add(direction)
+        newFace.y = positiveMod(newFace.y, net.length)
+        newFace.x = positiveMod(newFace.x, net[newFace.y].length)
+      } while (net[newFace.y][newFace.x][0][0] === " ")
+      return faces.findIndex(({netPosition}) => newFace.equals(netPosition))
     }
-
-    return {
-      east: [getNextFaceInDirection([1, 0]), 0],
-      south: [getNextFaceInDirection([0, 1]), 0],
-      west: [getNextFaceInDirection([-1, 0]), 0],
-      north: [getNextFaceInDirection([0, -1]), 0],
-    }
+    return [
+      { faceId: getNextFaceInDirection(Vector2.RIGHT), rotation: 0 },
+      { faceId: getNextFaceInDirection(Vector2.DOWN), rotation: 0 },
+      { faceId: getNextFaceInDirection(Vector2.LEFT), rotation: 0 },
+      { faceId: getNextFaceInDirection(Vector2.UP), rotation: 0 },
+    ]
   })
 
-interface Position {
-  face: number
-  x: number
-  y: number
-  direction: number
-}
-
-const step = (transitions: Transitions[]) => ({ face, x, y, direction }: Position): Position => {
-  const [dx, dy] = directions[direction]
-  const inDirection = (dir: number, fromLeft: number): {x: number, y: number} => {
-    if (dir == 0) { return { x: 0, y: fromLeft} } //R
-    if (dir == 1) { return { x: faceLength - fromLeft - 1, y: 0} } //D
-    if (dir == 2) { return { x: faceLength - 1, y: faceLength - fromLeft - 1} } //L
-    if (dir == 3) { return { x: fromLeft, y: faceLength - 1} } //U
+const step = (edges: Edges[]) => ({ face, faceCoordinates, directionId }: Position): Position => {
+  const inDirection = (dir: number, fromLeft: number): Vector2 => {
+    if (dir == 0) { return new Vector2(0, fromLeft) } // R
+    if (dir == 1) { return new Vector2(faceLength - fromLeft - 1, 0) } // D
+    if (dir == 2) { return new Vector2(faceLength - 1, faceLength - fromLeft - 1) } // L
+    if (dir == 3) { return new Vector2(fromLeft, faceLength - 1) } // U
   }
-  if (x + dx >= faceLength) {
-    const newDirection = positiveMod(direction + transitions[face].east[1], 4)
+  const newCoordinates = faceCoordinates.add(directions[directionId])
+  if (newCoordinates.x >= faceLength) {
+    const newDirection = positiveMod(directionId + edges[face][0].rotation, 4)
     return {
-      face: transitions[face].east[0],
-      direction: newDirection,
-      ...inDirection(newDirection, y)
+      face: edges[face][0].faceId,
+      directionId: newDirection,
+      faceCoordinates: inDirection(newDirection, newCoordinates.y)
     }
   }
-  if (x + dx < 0) {
-    const newDirection = positiveMod(direction + transitions[face].west[1], 4)
+  if (newCoordinates.x < 0) {
+    const newDirection = positiveMod(directionId + edges[face][2].rotation, 4)
     return {
-      face: transitions[face].west[0],
-      direction: newDirection,
-      ...inDirection(newDirection, faceLength - y - 1)
+      face: edges[face][2].faceId,
+      directionId: newDirection,
+      faceCoordinates: inDirection(newDirection, faceLength - newCoordinates.y - 1)
     }
   }
-  if (y + dy >= faceLength) {
-    const newDirection = positiveMod(direction + transitions[face].south[1], 4)
+  if (newCoordinates.y >= faceLength) {
+    const newDirection = positiveMod(directionId + edges[face][1].rotation, 4)
     return {
-      face: transitions[face].south[0],
-      direction: newDirection,
-      ...inDirection(newDirection, faceLength - x - 1)
+      face: edges[face][1].faceId,
+      directionId: newDirection,
+      faceCoordinates: inDirection(newDirection, faceLength - newCoordinates.x - 1)
     }
   }
-  if (y + dy < 0) {
-    const newDirection = positiveMod(direction + transitions[face].north[1], 4)
+  if (newCoordinates.y < 0) {
+    const newDirection = positiveMod(directionId + edges[face][3].rotation, 4)
     return {
-      face: transitions[face].north[0],
-      direction: newDirection,
-      ...inDirection(newDirection, x)
+      face: edges[face][3].faceId,
+      directionId: newDirection,
+      faceCoordinates: inDirection(newDirection, newCoordinates.x)
     }
   }
   return {
-    x: x + dx,
-    y: y + dy,
-    face, direction
+    faceCoordinates: newCoordinates,
+    face, directionId
   }
 }
 
 const turn = (position: Position, direction: 1 | -1): Position => ({
   ...position,
-  direction: positiveMod(position.direction + direction, 4)
+  directionId: positiveMod(position.directionId + direction, 4)
 })
 
-const start: Position = { x: 0, y: 0, face: 0, direction: 0}
+const start: Position = { faceCoordinates: Vector2.ORIGIN, face: 0, directionId: 0 }
 
-const traverse = (transitions: Transitions[]): Position => {
+const traverse = (transitions: Edges[]): Position => {
   let position = start
   for (const instruction of instructions) {
     if (instruction === "R") { position = turn(position, 1) }
@@ -141,80 +132,41 @@ const traverse = (transitions: Transitions[]): Position => {
     stepLoop:
     for (let i = 0; i < steps; i++) {
       const next = step(transitions)(position)
-      const nextTerrain = faces[next.face].grid[next.y][next.x]
+      const { x, y } = next.faceCoordinates
+      const nextTerrain = faces[next.face].grid[y][x]
       if (nextTerrain === "#") { break stepLoop }
-      else {
-        console.log(`${position.face} - [${position.x}, ${position.y}] (${position.direction})`)
-        position = next
-      }
+      else { position = next }
     }
   }
   return position
 }
 
+const getCubeEdge = (face: Face, directionId: number): Edge => {
+  const candidate = face.netPosition.add(directions[directionId])
+  const { x, y } = candidate
+
+  if (net[y] && net[y][x] && net[y][x][0][0] !== " ") {
+    const faceId = faces.findIndex(f => f.netPosition.equals(candidate))
+    return { faceId, rotation: 0 }
+  }
+
+  const { faceId: nextFaceId, rotation } = getCubeEdge(face, (directionId + 1) % 4)
+  const { faceId, rotation: additionalRotation } = getCubeEdge(faces[nextFaceId], positiveMod(directionId + rotation, 4))
+  return { faceId, rotation: positiveMod(rotation + additionalRotation + 1, 4) }
+}
+
+const cubeEdges: Edges[] =
+  range(0, 6).map(faceId =>
+    range(0, 4).map(directionId =>
+      getCubeEdge(faces[faceId], directionId)) as Edges)
+
 const scoreForPosition = (position: Position): number => {
   const face = faces[position.face]
-  const row = face.netPosition[0] * faceLength + position.y + 1
-  const col = face.netPosition[1] * faceLength + position.x + 1
-  return 1000 * row + 4 * col + position.direction
+  const { x, y } = position.faceCoordinates
+  const row = face.netPosition.y * faceLength + y + 1
+  const col = face.netPosition.x * faceLength + x + 1
+  return 1000 * row + 4 * col + position.directionId
 }
 
-/**
- * _N_
- * WXE
- * _S_
- */
-const getTransition = (face: Face, directionId: number): number[] => {
-  // if there is cube on net in right position, return that, rotation 0
-  // else rescurse to get one in direction + 1, then get transition for that one
-  // in original direction, add 1 to rotation?
-  const [dx, dy] = directions[directionId]
-  const [y0, x0] = face.netPosition
-  const [y, x] = [y0 + dy, x0 + dx]
-  if (net[y] && net[y][x] && net[y][x][0][0] !== " ") {
-    const faceId = faces.findIndex(f => f.netPosition[0] === y && f.netPosition[1] === x)
-    return [faceId, 0]
-  }
-  const [nextFaceId, rotation] = getTransition(face, (directionId + 1) % 4)
-  const [faceId, additionalRotation] = getTransition(faces[nextFaceId], positiveMod(directionId + rotation, 4))
-  return [faceId, positiveMod(rotation + additionalRotation + 1, 4)]
-}
-
-// TODO: calculate the edges...
-const sampleCubeTransitions: Transitions[] = [
-  { east: [5, 2], south: [3, 0], west: [2, 3], north: [1, 2] },
-  { east: [2, 0], south: [4, 2], west: [5, 1], north: [0, 2] },
-  { east: [3, 0], south: [4, 3], west: [1, 0], north: [0, 1] },
-  { east: [5, 1], south: [4, 0], west: [2, 0], north: [0, 0] },
-  { east: [5, 0], south: [1, 2], west: [2, 1], north: [3, 0] },
-  { east: [0, 2], south: [1, 3], west: [4, 0], north: [3, 3] },
-]
-
-
-/**
- * _01
- * _2_
- * 34_
- * 5__
- */
-const realCubeTransitions: Transitions[] = [
-  { east: [1, 0], south: [2, 0], west: [3, 2], north: [5, 1] }, //0
-  { east: [4, 2], south: [2, 1], west: [0, 0], north: [5, 0] }, //1
-  { east: [1, 3], south: [4, 0], west: [3, 3], north: [0, 0] }, //2
-  { east: [4, 0], south: [5, 0], west: [0, 2], north: [2, 1] }, //3
-  { east: [1, 2], south: [5, 1], west: [3, 0], north: [2, 0] }, //4
-  { east: [4, 3], south: [1, 0], west: [0, 3], north: [3, 0] }, //5
-]
-
-const test: Position = { face: 4, x: 0, y: 0, direction: 2 }
-
-console.log(step(sampleCubeTransitions)(test))
-
-//console.log("(P1): " + scoreForPosition(traverse(wrapAroundTransitions)))
-
-//console.log("(P2): " + scoreForPosition(traverse(realCubeTransitions)))
-
-console.log(getTransition(faces[0], 0))
-console.log(getTransition(faces[0], 1))
-console.log(getTransition(faces[0], 2))
-console.log(getTransition(faces[0], 3))
+console.log("(P1): " + scoreForPosition(traverse(wrapAroundEdges)))
+console.log("(P2): " + scoreForPosition(traverse(cubeEdges)))
