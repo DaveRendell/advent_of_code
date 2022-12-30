@@ -20,6 +20,7 @@
     "day18": "ts-node 18_like_a_gif_for_your_yard/main.ts ",
     "day19": "ts-node 19_medicine_for_rudolph/main.ts ",
     "day20": "ts-node 20_infinite_elves_and_infinite_houses/main.ts ",
-    "day21": "ts-node 21_rpg_simulator_20xx/main.ts "
+    "day21": "ts-node 21_rpg_simulator_20xx/main.ts ",
+    "day22": "ts-node 22_wizard_simulator_20xx/main.ts "
   }
 }
