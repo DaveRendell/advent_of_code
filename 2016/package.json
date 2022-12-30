@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "day1": "ts-node 1_no_time_for_a_taxicab/main.ts ",
+    "day2": "ts-node 2_bathroom_security/main.ts ",
+    "day3": "ts-node 3_squares_with_three_sides/main.ts "
+  }
+}

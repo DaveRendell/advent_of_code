@@ -51,8 +51,27 @@ export default class Vector2 {
     return new Vector2(this.x + other.x, this.y + other.y)
   }
 
+  scale(magnitude: number) {
+    return new Vector2(this.x * magnitude, this.y * magnitude)
+  }
+
   equals(other: Vector2): boolean {
     return other.x === this.x && other.y === this.y
+  }
+
+  inBounds(
+    minX: number, maxX: Number, minY: number, maxY: number
+  ): boolean {
+    return minX <= this.x && maxX >= this.x
+     && minY <= this.y && maxY >= this.y
+  }
+
+  taxiMagnitude(): number {
+    return Math.abs(this.x) + Math.abs(this.y)
+  }
+
+  toString(): string {
+    return `[x: ${this.x}, y:${this.y}]`
   }
 
   static ORIGIN = new Vector2(0, 0)
