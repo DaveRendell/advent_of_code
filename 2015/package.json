@@ -23,6 +23,7 @@
     "day21": "ts-node 21_rpg_simulator_20xx/main.ts ",
     "day22": "ts-node 22_wizard_simulator_20xx/main.ts ",
     "day23": "ts-node 23_opening_the_turing_lock/main.ts ",
-    "day24": "ts-node 24_it_hangs_in_the_balance/main.ts "
+    "day24": "ts-node 24_it_hangs_in_the_balance/main.ts ",
+    "day25": "ts-node 25_let_it_snow/main.ts "
   }
 }
