@@ -2,6 +2,9 @@
   "scripts": {
     "day1": "ts-node 1_no_time_for_a_taxicab/main.ts ",
     "day2": "ts-node 2_bathroom_security/main.ts ",
-    "day3": "ts-node 3_squares_with_three_sides/main.ts "
+    "day3": "ts-node 3_squares_with_three_sides/main.ts ",
+    "day4": "ts-node 4_security_through_obscurity/main.ts ",
+    "day5": "ts-node 5_how_about_a_nice_game_of_chess/main.ts ",
+    "day6": "ts-node 6_signals_and_noise/main.ts "
   }
 }
