@@ -5,6 +5,7 @@
     "day3": "ts-node 3_squares_with_three_sides/main.ts ",
     "day4": "ts-node 4_security_through_obscurity/main.ts ",
     "day5": "ts-node 5_how_about_a_nice_game_of_chess/main.ts ",
-    "day6": "ts-node 6_signals_and_noise/main.ts "
+    "day6": "ts-node 6_signals_and_noise/main.ts ",
+    "day7": "ts-node 7_internet_protocol_version_7/main.ts $1"
   }
 }
