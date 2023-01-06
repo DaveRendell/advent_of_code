@@ -1,77 +1,124 @@
-import HashSet from "../../utils/hashset"
+import HashMap from "../../utils/hashmap"
+import Queue from "../../utils/queue"
+import { sum } from "../../utils/reducers"
+import { descending, descendingBy } from "../../utils/sorters"
 
 interface State {
   elevator: number,
-  chips: number[],
-  rtgs: number[],
+  elements: Element[]
 }
 
-const sample: State = {
-  elevator: 1,
-  chips: [1, 1],
-  rtgs: [2, 3],
-}
+interface Element { chip: number, gen: number }
 
 const input: State = {
-  // promethium, cobalt, curium, rutherium, plutonium
   elevator: 1,
-  chips: [1, 3, 3, 3, 3],
-  rtgs: [1, 2, 2, 2, 2],
+  elements: [
+    { chip: 1, gen: 1 },
+    { chip: 3, gen: 2 },
+    { chip: 3, gen: 2 },
+    { chip: 3, gen: 2 },
+    { chip: 3, gen: 2 },
+  ]
 }
 
-const start = input
-const end: State = { ...start, chips: start.chips.map(() => 4), rtgs: start.rtgs.map(() => 4)}
+const getEnd = ({ elements }: State): State => ({
+  elevator: 4,
+  elements: elements.map(() => ({ chip: 4, gen: 4 }))
+})
 
-const moves = (state: State): State[] =>
-  [state.elevator - 1, state.elevator + 1]
+const hash = ({ elevator, elements }: State): string =>
+  [elevator, ...elements.map(({ chip, gen }) =>
+    5 * chip + gen).sort(descending)
+  ].join("-")
+
+const p1Start = input
+
+const moves = ({ elevator, elements }: State): State[] =>
+  [elevator - 1, elevator + 1]
     .filter(floor => floor >= 1 && floor <= 4)
     .flatMap(floor => {
       let moves: State[] = []
-      moves.push({ ...state, elevator: floor }) // take nothing
-      for (let i = -1; i < state.chips.length - 1; i++) {
-        for (let j = i + 1; j < state.chips.length; j++) {
-          if ((i === -1 || state.chips[i] === state.elevator) && state.chips[j] === state.elevator) {
-            moves.push({
-              ...state,
-              elevator: floor,
-              chips: state.chips.map((c, k) =>
-                [i, j].includes(k) ? floor : c)
-            }) // take chips
-          }
-          if ((i === -1 || state.rtgs[i] === state.elevator) && state.rtgs[j] === state.elevator) {
-            moves.push({
-              ...state,
-              elevator: floor,
-              rtgs: state.rtgs.map((r, k) =>
-                [i, j].includes(k) ? floor : r)
-            }) // take rtgs
-          }
-        }
-      }
-      for (let i = 0; i < state.chips.length; i++) {
-        if (state.chips[i] === state.elevator && state.rtgs[i] === state.elevator) {
+      for (let i = 0; i < elements.length; i++) {
+        if (elements[i].chip === elevator && elements[i].gen === elevator) {
           moves.push({
             elevator: floor,
-            chips: state.chips.map((c, j) => j === i ? floor : c),
-            rtgs: state.rtgs.map((r, j) => j === i ? floor : r)
+            elements: elements.map((e, k) => k === i ? { chip: floor, gen: floor } : e)
           }) // take chip and matching RTG
+        }
+        if (elements[i].chip === elevator) {
+          moves.push({
+            elevator: floor,
+            elements: elements.map((e, k) => k === i ? { chip: floor, gen: e.gen } : e)
+          }) // take just this chip
+          for (let j = i + 1; j < elements.length; j++) {
+            if (elements[j].chip === elevator) {
+              moves.push({
+                elevator: floor,
+                elements: elements
+                  .map((e, k) => k === i ? { chip: floor, gen: e.gen } : e)
+                  .map((e, k) => k === j ? { chip: floor, gen: e.gen } : e)
+              }) // take two chips
+            }
+          }
+        }
+        if (elements[i].gen === elevator) {
+          moves.push({
+            elevator: floor,
+            elements: elements.map((e, k) => k === i ? { chip: e.chip, gen: floor } : e)
+          }) // take just this rtg
+          for (let j = i + 1; j < elements.length; j++) {
+            if (elements[j].gen === elevator) {
+              moves.push({
+                elevator: floor,
+                elements: elements
+                  .map((e, k) => k === i ? { chip: e.chip, gen: floor } : e)
+                  .map((e, k) => k === j ? { chip: e.chip, gen: floor } : e)
+              }) // take two chips
+            }
+          }
         }
       }
       return moves
-        .filter(({chips, rtgs}) => chips
-          .every((c, i) => rtgs[i] === c || rtgs.every(r => r !== c)))
+        .filter(({elements}) => elements.every(({ chip, gen }) =>
+          chip === gen || elements.every(e => e.gen !== chip)))
     })
 
-const states: HashSet<State> = new HashSet(JSON.stringify, [start])
-let steps = -1
+const minimumSteps = (state: State): number => {
+  const end: State = getEnd(state)
+  const quickest: HashMap<State, number> = new HashMap(hash, [[state, 0]])
+  const todo: Queue<State> = new Queue()
+  let currentBest = Infinity
+  todo.add(state)
 
-while (!states.has(end)) {
-  steps++
-  if (steps % 10 === 0) { console.log(states.size) }
-  states.entries().forEach(state =>
-    moves(state).forEach(next => states.add(next)))
+  while (todo.hasNext()) {
+    const next = todo.receive()
+    const steps = quickest.get(next)
+
+    if (next.elements.every(({ chip, gen }) => chip === 4 && gen === 4)) {
+      if (steps < currentBest) {
+        currentBest = steps
+        console.log("New current best: " + currentBest)
+      }
+    }
+
+    // ignore this branch if already exists faster solution
+    if (currentBest <= steps + 1) { continue }
+
+    moves(next)
+      .filter(s => !quickest.has(s) || quickest.get(s) > steps + 1)
+      .forEach(s => {
+        quickest.set(s, steps + 1)
+        todo.add(s)
+      })
+  }
+  return quickest.get(end)
 }
 
-console.log("(P1): " + steps) //not 19
+console.log("(P1): " + minimumSteps(p1Start))
 
-console.log("(P2): " + 0)
+const p2Start: State = {
+  elevator: 1,
+  elements: [...p1Start.elements, { chip: 1, gen: 1 }, { chip: 1, gen: 1 }]
+}
+
+console.log("(P2): " + minimumSteps(p2Start))
