@@ -9,6 +9,7 @@
     "day7": "ts-node 7_internet_protocol_version_7/main.ts $1",
     "day8": "ts-node 8_two_factor_authentication/main.ts $1",
     "day9": "ts-node 9_explosives_in_cyberspace/main.ts $1",
-    "day10": "ts-node 10_balance_bots/main.ts "
+    "day10": "ts-node 10_balance_bots/main.ts ",
+    "day11": "ts-node 11_radioisotope_thermoelectric_generators/main.ts $1"
   }
 }
