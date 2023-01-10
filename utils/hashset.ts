@@ -4,7 +4,7 @@ export default class HashSet<Item> {
 
   private data: Map<string, Item>
 
-  constructor(hash: (Item) => string, data: Item[] = []) {
+  constructor(hash: (item: Item) => string, data: Item[] = []) {
     this.hash = hash
     this.data = new Map(data.map(item => [hash(item), item]))
     this.size = this.data.size
