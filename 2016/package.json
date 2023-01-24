@@ -12,6 +12,7 @@
     "day10": "ts-node 10_balance_bots/main.ts ",
     "day11": "ts-node 11_radioisotope_thermoelectric_generators/main.ts $1",
     "day12": "ts-node 12_leonardos_monorail/main.ts $1",
-    "day13": "ts-node 13_a_maze_of_twisty_little_cubicles/main.ts "
+    "day13": "ts-node 13_a_maze_of_twisty_little_cubicles/main.ts ",
+    "day14": "ts-node 14_one_time_pad/main.ts "
   }
 }
