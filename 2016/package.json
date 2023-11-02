@@ -18,6 +18,7 @@
     "day16": "ts-node 16_dragon_checksum/main.ts ",
     "day17": "ts-node 17_two_steps_forward/main.ts ",
     "day18": "ts-node 18_like_a_rogue/main.ts ",
-    "day19": "ts-node 19_an_elephant_named_joseph/main.ts "
+    "day19": "ts-node 19_an_elephant_named_joseph/main.ts ",
+    "day20": "ts-node 20_firewall_rules/main.ts "
   }
 }
