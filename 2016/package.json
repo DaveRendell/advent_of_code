@@ -20,6 +20,7 @@
     "day18": "ts-node 18_like_a_rogue/main.ts ",
     "day19": "ts-node 19_an_elephant_named_joseph/main.ts ",
     "day20": "ts-node 20_firewall_rules/main.ts ",
-    "day21": "ts-node 21_scrambled_letters_and_hash/main.ts "
+    "day21": "ts-node 21_scrambled_letters_and_hash/main.ts ",
+    "day22": "ts-node 22_grid_computing/main.ts "
   }
 }
