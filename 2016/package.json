@@ -23,6 +23,7 @@
     "day21": "ts-node 21_scrambled_letters_and_hash/main.ts ",
     "day22": "ts-node 22_grid_computing/main.ts ",
     "day23": "ts-node 23_safe_cracking/main.ts ",
-    "day24": "ts-node 24_air_duct_spelunking/main.ts "
+    "day24": "ts-node 24_air_duct_spelunking/main.ts ",
+    "day25": "ts-node 25_clock_signal/main.ts "
   }
 }
