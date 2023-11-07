@@ -60,7 +60,7 @@ export default class Vector2 {
   }
 
   inBounds(
-    minX: number, maxX: Number, minY: number, maxY: number
+    minX: number, maxX: number, minY: number, maxY: number
   ): boolean {
     return minX <= this.x && maxX >= this.x
      && minY <= this.y && maxY >= this.y
