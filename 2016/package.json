@@ -22,6 +22,7 @@
     "day20": "ts-node 20_firewall_rules/main.ts ",
     "day21": "ts-node 21_scrambled_letters_and_hash/main.ts ",
     "day22": "ts-node 22_grid_computing/main.ts ",
-    "day23": "ts-node 23_safe_cracking/main.ts "
+    "day23": "ts-node 23_safe_cracking/main.ts ",
+    "day24": "ts-node 24_air_duct_spelunking/main.ts "
   }
 }
