@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "day1": "ts-node 1_inverse_captcha/main.ts "
+  }
+}
