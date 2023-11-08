@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "day1": "ts-node 1_inverse_captcha/main.ts "
+    "day1": "ts-node 1_inverse_captcha/main.ts ",
+    "day2": "ts-node 2_corruption_checksum/main.ts "
   }
 }
