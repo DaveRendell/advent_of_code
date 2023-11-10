@@ -1,6 +1,8 @@
 {
   "scripts": {
     "day1": "ts-node 1_inverse_captcha/main.ts ",
-    "day2": "ts-node 2_corruption_checksum/main.ts "
+    "day2": "ts-node 2_corruption_checksum/main.ts ",
+    "day3": "ts-node 3_spiral_memory/main.ts ",
+    "day4": "ts-node 4_high_entropy_passphrases/main.ts "
   }
 }
