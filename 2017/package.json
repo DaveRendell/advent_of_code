@@ -5,6 +5,7 @@
     "day3": "ts-node 3_spiral_memory/main.ts ",
     "day4": "ts-node 4_high_entropy_passphrases/main.ts ",
     "day5": "ts-node 5_a_maze_of_twisty_trampolines_all_alike/main.ts ",
-    "day6": "ts-node 6_memory_allocation/main.ts "
+    "day6": "ts-node 6_memory_allocation/main.ts ",
+    "day7": "ts-node 7_recursive_circus/main.ts "
   }
 }

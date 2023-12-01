@@ -19,3 +19,10 @@ export const groupBy = <Item, Characteristic extends string | number>(
     const group = groups[char]
     return { ...groups, [char]: group ?  [...group, next] : [next]}
   }
+
+export const counts = <Item extends string | number>(
+  counts: Record<Item, number>, next: Item
+): Record<Item, number> => ({
+  ...counts,
+  [next]: counts[next] ? counts[next] + 1 : 1
+})
