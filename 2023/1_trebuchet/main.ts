@@ -6,12 +6,10 @@ const input = readLines(__dirname, inputFile())
 
 const getValue = (line: string): number => {
   const digits = line.split("").filter(x => "0123456789".includes(x))
-  console.log(digits.at(0) + digits.at(-1))
   return parseInt(digits.at(0) + digits.at(-1))
 }
 
 const values = input.map(getValue)
-console.log(values)
 
 console.log("(P1): " + values.reduce(sum))
 
