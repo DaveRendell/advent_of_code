@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "day1": "ts-node 1_trebuchet/main.ts "
+    "day1": "ts-node 1_trebuchet/main.ts ",
+    "day2": "ts-node 2_cube_conundrum/main.ts "
   }
 }
