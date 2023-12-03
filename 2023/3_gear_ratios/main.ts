@@ -4,7 +4,11 @@ import { sum } from "../../utils/reducers"
 
 const input = readCharArray(__dirname, inputFile())
 
-const numbers = []
+interface Symbol { symbol: string, x: number, y: number }
+
+interface PartNumber { number: number, symbols: Symbol[] }
+
+const numbers: PartNumber[] = []
 
 input.forEach((row, i) =>
   row.forEach((_, j) => {
@@ -15,16 +19,44 @@ input.forEach((row, i) =>
     if (isNaN(number)) { return }
 
     const numberLength = number.toString().length
-    const border =
-      (i > 0 ? input[i - 1].slice(Math.max(j - 1, 0), j + numberLength + 1).join("") : "")
-      + (row[j - 1] || "") + (row[j + numberLength] || "")
-      + (i < (input.length - 1) ? input[i + 1].slice(Math.max(j - 1, 0), j + numberLength + 1).join("") : "")
 
-    const hasSymbol = border.split("").filter(c => !("1234567890.".includes(c))).length > 0
-
-    if (hasSymbol) { numbers.push(number) }    
+    let symbols: Symbol[] = []
+    for (let x = Math.max(j - 1, 0); x < Math.min(j + numberLength + 1, row.length); x++) {
+      for (let y = Math.max(i - 1, 0); y < Math.min(i + 2, input.length); y++) {
+        if (!("1234567890.".includes(input[y][x]))) {
+          symbols.push({ x, y, symbol: input[y][x] })
+        }
+      }
+    }
+    numbers.push({ number, symbols })
   }))
 
-console.log("(P1): " + numbers.reduce(sum))
+console.log(numbers
+  .filter(({ symbols }) => symbols.length > 0)
+  .filter(({number}) => number === 603).map(n => JSON.stringify(n)))
 
-console.log("(P2): " + 0)
+const partNumberSum = numbers
+  .filter(({ symbols }) => symbols.length > 0)
+  .map(({ number }) => number)
+  .reduce(sum)
+console.log("(P1): " + partNumberSum)
+
+const gears: PartNumber[][] = []
+
+for (let i = 0; i < input.length; i++) {
+  for (let j = 0; j < input[i].length; j++) {
+    if (input[i][j] === "*") {
+      const adjacentNumbers = numbers
+        .filter(({symbols}) => symbols.some(({x, y}) => x === j && y === i))
+      if (adjacentNumbers.length === 2) {
+        gears.push(adjacentNumbers)
+      }
+    }
+  }
+}
+
+const gearRatioSum = gears
+  .map(([n1, n2]) => n1.number * n2.number)
+  .reduce(sum)
+
+console.log("(P2): " + gearRatioSum)
