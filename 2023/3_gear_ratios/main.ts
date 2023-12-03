@@ -1,11 +1,21 @@
 import inputFile from "../../utils/inputFile"
-import readCharArray from "../../utils/readCharArray"
+import readLines from "../../utils/readLines"
 import { sum } from "../../utils/reducers"
 
-const input = readCharArray(__dirname, inputFile())
+let input = readLines(__dirname, inputFile())
+  .map(row => row
+    .replaceAll("+", "#").replaceAll("-", "#") // Getting rid of these makes parsing numbers easier
+    )
+  .map(row => "." + row + ".") // Adding border to make life easier... 
+  .map(row => row.split(""))
+input = [
+  new Array<string>(input[0].length).fill("."), 
+  ...input,
+  new Array(input[0].length).fill(".")
+] // Top and bottom border too...
+
 
 interface Symbol { symbol: string, x: number, y: number }
-
 interface PartNumber { number: number, symbols: Symbol[] }
 
 const numbers: PartNumber[] = []
@@ -21,8 +31,8 @@ input.forEach((row, i) =>
     const numberLength = number.toString().length
 
     let symbols: Symbol[] = []
-    for (let x = Math.max(j - 1, 0); x < Math.min(j + numberLength + 1, row.length); x++) {
-      for (let y = Math.max(i - 1, 0); y < Math.min(i + 2, input.length); y++) {
+    for (let x = j - 1; x < j + numberLength + 1; x++) {
+      for (let y = i - 1; y < i + 2; y++) {
         if (!("1234567890.".includes(input[y][x]))) {
           symbols.push({ x, y, symbol: input[y][x] })
         }
@@ -30,10 +40,6 @@ input.forEach((row, i) =>
     }
     numbers.push({ number, symbols })
   }))
-
-console.log(numbers
-  .filter(({ symbols }) => symbols.length > 0)
-  .filter(({number}) => number === 603).map(n => JSON.stringify(n)))
 
 const partNumberSum = numbers
   .filter(({ symbols }) => symbols.length > 0)
