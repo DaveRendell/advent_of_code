@@ -2,6 +2,7 @@
   "scripts": {
     "day1": "ts-node 1_trebuchet/main.ts ",
     "day2": "ts-node 2_cube_conundrum/main.ts ",
-    "day3": "ts-node 3_gear_ratios/main.ts "
+    "day3": "ts-node 3_gear_ratios/main.ts ",
+    "day4": "ts-node 4_scratchcards/main.ts "
   }
 }
