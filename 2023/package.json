@@ -4,6 +4,7 @@
     "day2": "ts-node 2_cube_conundrum/main.ts ",
     "day3": "ts-node 3_gear_ratios/main.ts ",
     "day4": "ts-node 4_scratchcards/main.ts ",
-    "day5": "ts-node 5_if_you_give_a_seed_a_fertilizer/main.ts "
+    "day5": "ts-node 5_if_you_give_a_seed_a_fertilizer/main.ts ",
+    "day6": "ts-node 6_wait_for_it/main.ts "
   }
 }
