@@ -7,6 +7,7 @@
     "day5": "ts-node 5_if_you_give_a_seed_a_fertilizer/main.ts ",
     "day6": "ts-node 6_wait_for_it/main.ts ",
     "day7": "ts-node 7_camel_cards/main.ts ",
-    "day8": "ts-node 8_haunted_wasteland/main.ts "
+    "day8": "ts-node 8_haunted_wasteland/main.ts ",
+    "day9": "ts-node 9_mirage_maintenance/main.ts "
   }
 }
