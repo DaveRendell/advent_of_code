@@ -33,8 +33,15 @@ console.log("(P1): " + root)
 const totalWeight = (name: string): number =>
   towers[name].children.map(totalWeight).reduce(sum, towers[name].weight)
 
+// function getUnbalanced(nodeName: string = root): string {
+//   const kids = towers[nodeName].children
+
+// }
+
+towers["exrud"].children.map(c => [c, totalWeight(c)]).forEach(w => console.log(w))
+
+// gozhrsf needs to be 5 lighter
+// 757
 
 
-
-
-console.log("(P2): " + totalWeight("ugml"))
+console.log("(P2): " + 0)

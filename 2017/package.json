@@ -6,6 +6,8 @@
     "day4": "ts-node 4_high_entropy_passphrases/main.ts ",
     "day5": "ts-node 5_a_maze_of_twisty_trampolines_all_alike/main.ts ",
     "day6": "ts-node 6_memory_allocation/main.ts ",
-    "day7": "ts-node 7_recursive_circus/main.ts "
+    "day7": "ts-node 7_recursive_circus/main.ts ",
+    "day8": "ts-node 8_i_heard_you_like_registers/main.ts $1",
+    "day9": "ts-node 9_stream_processing/main.ts $1"
   }
 }
