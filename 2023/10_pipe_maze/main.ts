@@ -14,7 +14,7 @@ const inputAt = (v: Vector2) =>
   v.inBounds(0, input[0].length, 0, input.length) ? input[v.y][v.x]: "."
 
 
-const getPipe = (start: Vector2): [HashSet<Vector2>, string[]] => {
+const getPipe = (start: Vector2): HashSet<Vector2> => {
   const startPoints = [
     "|7F".includes(inputAt(start.up())) ? [start.up()] : [],
     "|JL".includes(inputAt(start.down())) ? [start.down()] : [],
@@ -43,17 +43,47 @@ const getPipe = (start: Vector2): [HashSet<Vector2>, string[]] => {
     edges = next
   }
 
-  return [pipe, []]
+  return pipe
 }
 
-const [pipe, directions] = getPipe(s)
+const pipe = getPipe(s)
+input[sY][sX] = "7"
 
-// const right: { [tile: string]: (v: Vector2) => Vector2 } = {
-//   "-"
-// }
+const interior = new HashSet<Vector2>(v => v.toString())
 
-drawGrid(input, (v) => pipe.has(v), () => false, "").forEach(r => console.log(r))
+input.forEach((row, y) => {
+  let isInInterior = false
+  let lastCorner: string = ""
+
+  row.forEach((c, x) => {
+    const v = new Vector2(x, y)
+    if (pipe.has(v)) {
+      if (c == "|") { isInInterior = !isInInterior }
+      if ("FL".includes(c)) { lastCorner = c }
+      if (lastCorner == "L" && c == "7") { isInInterior = !isInInterior }
+      if (lastCorner == "F" && c == "J") { isInInterior = !isInInterior }
+    } else if (isInInterior) {
+      interior.add(v)
+    }
+  })
+})
+
+// Rest is just vis
+
+drawGrid(
+  input,
+  (v) => pipe.has(v),
+  (v) => interior.has(v),
+  ""
+).forEach(r => console.log(r
+    .replaceAll("7", "┐")
+    .replaceAll("L", "└")
+    .replaceAll("F", "┌")
+    .replaceAll("J", "┘")
+    .replaceAll("-", "─")
+    .replaceAll("|", "│")
+  ))
+
 
 console.log("(P1): " + Math.ceil(pipe.size / 2))
-
-console.log("(P2): " + 0)
+console.log("(P2): " + interior.size)

@@ -74,6 +74,11 @@ export default class Vector2 {
     return `[x: ${this.x}, y:${this.y}]`
   }
 
+  up(): Vector2 { return this.add(Vector2.UP) }
+  down(): Vector2 { return this.add(Vector2.DOWN) }
+  left(): Vector2 { return this.add(Vector2.LEFT) }
+  right(): Vector2 { return this.add(Vector2.RIGHT) }
+
   static ORIGIN = new Vector2(0, 0)
   static RIGHT = new Vector2(1, 0)
   static DOWN = new Vector2(0, 1)
