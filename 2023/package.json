@@ -9,6 +9,7 @@
     "day7": "ts-node 7_camel_cards/main.ts ",
     "day8": "ts-node 8_haunted_wasteland/main.ts ",
     "day9": "ts-node 9_mirage_maintenance/main.ts ",
-    "day10": "ts-node 10_pipe_maze/main.ts "
+    "day10": "ts-node 10_pipe_maze/main.ts ",
+    "day11": "ts-node 11_cosmic_expansion/main.ts "
   }
 }
