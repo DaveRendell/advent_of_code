@@ -11,6 +11,7 @@
     "day9": "ts-node 9_mirage_maintenance/main.ts ",
     "day10": "ts-node 10_pipe_maze/main.ts ",
     "day11": "ts-node 11_cosmic_expansion/main.ts ",
-    "day12": "ts-node 12_hot_springs/main.ts "
+    "day12": "ts-node 12_hot_springs/main.ts ",
+    "day13": "ts-node 13_point_of_incidence/main.ts "
   }
 }
