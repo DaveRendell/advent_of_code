@@ -9,6 +9,7 @@
     "day7": "ts-node 7_recursive_circus/main.ts ",
     "day8": "ts-node 8_i_heard_you_like_registers/main.ts $1",
     "day9": "ts-node 9_stream_processing/main.ts $1",
-    "day10": "ts-node 10_knot_hash/main.ts $1"
+    "day10": "ts-node 10_knot_hash/main.ts $1",
+    "day11": "ts-node 11_hex_ed/main.ts $1"
   }
 }
