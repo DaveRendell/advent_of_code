@@ -1,10 +1,10 @@
 export default class HashMap<Key, Value> {
-  hash: (Key) => string
+  hash: (Key) => string | number
   size: number
   
-  private data: Map<string, [Key, Value]>
+  data: Map<(string | number), [Key, Value]>
 
-  constructor(hash: (key: Key) => string, data: [Key, Value][]) {
+  constructor(hash: (key: Key) => string | number, data: [Key, Value][]) {
     this.hash = hash
     this.data = new Map(data.map(([key, value]) => [hash(key), [key, value]]))
     this.size = this.data.size
