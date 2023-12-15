@@ -29,6 +29,10 @@ export default class Queue<T> {
   hasNext(): boolean {
     return this.length > 0
   }
+
+  peek(): T| undefined {
+    return this.front ? this.front.value : undefined
+  }
 }
 
 interface QueueNode<T> {
