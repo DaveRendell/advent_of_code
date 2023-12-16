@@ -16,7 +16,7 @@ export default class HashMap<Key, Value> {
   }
 
   get(key: Key): Value {
-    return this.data.get(this.hash(key))[1]
+    return this.data.has(this.hash(key)) ? this.data.get(this.hash(key))[1] : undefined
   }
 
   has(key: Key): boolean {
