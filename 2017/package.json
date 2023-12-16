@@ -14,6 +14,7 @@
     "day12": "ts-node 12_digital_plumber/main.ts ",
     "day13": "ts-node 13_packet_scanners/main.ts ",
     "day14": "ts-node 14_disk_defragmentation/main.ts ",
-    "day15": "ts-node 15_dueling_generators/main.ts "
+    "day15": "ts-node 15_dueling_generators/main.ts ",
+    "day17": "ts-node 17_permutation_promenade/main.ts "
   }
 }
