@@ -51,6 +51,10 @@ export default class Vector2 {
     return new Vector2(this.x + other.x, this.y + other.y)
   }
 
+  subtract(other: Vector2): Vector2 {
+    return new Vector2(this.x - other.x, this.y - other.y)
+  }
+
   scale(magnitude: number) {
     return new Vector2(this.x * magnitude, this.y * magnitude)
   }

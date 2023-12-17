@@ -15,6 +15,7 @@
     "day13": "ts-node 13_point_of_incidence/main.ts ",
     "day14": "ts-node 14_parabolic_reflector_dish/main.ts ",
     "day15": "ts-node 15_lens_library/main.ts ",
-    "day16": "ts-node 16_the_floor_will_be_lava/main.ts "
+    "day16": "ts-node 16_the_floor_will_be_lava/main.ts ",
+    "day17": "ts-node 17_clumsy_crucible/main.ts "
   }
 }
