@@ -1,3 +1,5 @@
+import HashMap from "./hashmap"
+import HashSet from "./hashset"
 import { positiveMod } from "./numbers"
 
 export default class Vector2 {
@@ -88,4 +90,16 @@ export default class Vector2 {
   static DOWN = new Vector2(0, 1)
   static LEFT = new Vector2(-1, 0)
   static UP = new Vector2(0, -1)
+}
+
+export class VectorSet extends HashSet<Vector2> {
+  constructor(data: Vector2[] = []) {
+    super(v => v.toString(), data)
+  }
+}
+
+export class VectorMap<T> extends HashMap<Vector2, T> {
+  constructor(data: [Vector2, T][] = []) {
+    super(v => v.toString(), data)
+  }
 }
