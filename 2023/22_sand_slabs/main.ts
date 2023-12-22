@@ -2,7 +2,7 @@ import readLines from "../../utils/readLines"
 import inputFile from "../../utils/inputFile"
 import { ascendingBy, descendingBy } from "../../utils/sorters"
 import { range } from "../../utils/numbers"
-import { max, min } from "../../utils/reducers"
+import { sum } from "../../utils/reducers"
 
 interface Brick {
     xMin: number, xMax: number,
@@ -54,7 +54,7 @@ const intersection = (setA: Set<number>, setB: Set<number>): Set<number> =>
 
 const memo = new Map<number, Set<number>>()
 
-const getSingleSupports = (label: number): Set<number> => {
+const getCriticalBricks = (label: number): Set<number> => {
     if (memo.has(label)) { return memo.get(label) }
     // Get all single blocks that removing it makes this block fall
     let output: Set<number>
@@ -64,10 +64,10 @@ const getSingleSupports = (label: number): Set<number> => {
     if (brick.supports.length == 0) {
         output = new Set()
     } else if (brick.supports.length == 1) {
-        output = new Set([...getSingleSupports(brick.supports[0]), brick.supports[0]])
+        output = new Set([...getCriticalBricks(brick.supports[0]), brick.supports[0]])
     } else {
         output = brick.supports
-            .map(getSingleSupports)
+            .map(getCriticalBricks)
             .reduce(intersection, new Set(range(0, bricks.length)))
     }
 
@@ -75,52 +75,7 @@ const getSingleSupports = (label: number): Set<number> => {
     return output
 }
 
-const mostFalling = range(0, bricks.length)
-    .map(label1 => range(0, bricks.length)
-        .filter(label2 => getSingleSupports(label2).has(label1))
-        .length)
-    .reduce(max) + 1
+const criticalBricks = range(0, bricks.length)
+    .map(label => getCriticalBricks(label).size)
 
-// console.log(range(0, bricks.length).map(getSingleSupports))
-
-// Check fallen bricks for weirdness?
-const allXs = bricks.flatMap(brick => [brick.xMin, brick.xMax])
-const allYs = bricks.flatMap(brick => [brick.yMin, brick.yMax])
-const allZs = bricks.flatMap(brick => [brick.zMin, brick.zMax])
-
-const minX = allXs.reduce(min)
-const maxX = allXs.reduce(max)
-const minY = allYs.reduce(min)
-const maxY = allYs.reduce(max)
-const minZ = allZs.reduce(min)
-const maxZ = allZs.reduce(max)
-
-console.log({ minX, maxX, minY, maxY, minZ, maxZ })
-let blocks = 0
-// check for overlapping bricks
-range(0, 10).forEach(x =>
-    range(0, 10).forEach(y =>
-        range(0, 177).forEach(z => {
-            const bs = bricks.filter(brick =>
-                brick.xMin <= x && x <= brick.xMax
-                && brick.yMin <= y && y <= brick.yMax
-                && brick.zMin <= z && z <= brick.zMax)
-            if (bs.length > 1) {
-                console.log([x, y, z])
-                console.log(bs)
-                console.log("-------\n")
-            }
-            if (bs.length > 0) { blocks++ }
-        })))
-console.log(blocks)
-// check for floating bricks
-bricks
-    .filter(brick => brick.supports.length == 0)
-    .filter(brick => brick.zMin > 1)
-    .forEach(console.log)
-// check for bricks supported by bricks above them or level with them
-bricks
-    .filter(brick => brick.supports.map(l => bricks.find(b => b.label == l)).some(b => b.zMax >= brick.zMin))
-    .forEach(console.log)
-
-console.log("(P2): ", mostFalling) // 1294 too low
+console.log("(P2): ", criticalBricks.reduce(sum))
