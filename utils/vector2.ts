@@ -72,6 +72,10 @@ export default class Vector2 {
      && minY <= this.y && maxY >= this.y
   }
 
+  inGrid(width: number, height: number): boolean {
+    return this.inBounds(0, width - 1, 0, height - 1)
+  }
+
   taxiMagnitude(): number {
     return Math.abs(this.x) + Math.abs(this.y)
   }
