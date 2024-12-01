@@ -23,6 +23,7 @@
     "day21": "ts-node 21_step_counter/main.ts ",
     "day22": "ts-node 22_sand_slabs/main.ts ",
     "day23": "ts-node 23_a_long_walk/main.ts ",
-    "day24": "ts-node 24_never_tell_me_the_odds/main.ts "
+    "day24": "ts-node 24_never_tell_me_the_odds/main.ts ",
+    "day25": "ts-node 25_snowverload/main.ts "
   }
 }
