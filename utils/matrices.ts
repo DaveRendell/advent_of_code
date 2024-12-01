@@ -30,3 +30,6 @@ const Y = [
   [ 0,  1,  0],
   [-1,  0,  0]
 ]
+
+export const scale = (factor: number, matrix: number[][]): number[][] =>
+  matrix.map(row => row.map(i => i * factor))
