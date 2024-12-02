@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "day1": "ts-node 1_historian_hysteria/main.ts "
+    "day1": "ts-node 1_historian_hysteria/main.ts ",
+    "day2": "ts-node 2_red_nosed_reports/main.ts "
   }
 }
