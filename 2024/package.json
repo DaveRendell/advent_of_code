@@ -2,6 +2,7 @@
   "scripts": {
     "day1": "ts-node 1_historian_hysteria/main.ts ",
     "day2": "ts-node 2_red_nosed_reports/main.ts ",
-    "day3": "ts-node 3_mull_it_over/main.ts "
+    "day3": "ts-node 3_mull_it_over/main.ts ",
+    "day4": "ts-node 4_ceres_search/main.ts "
   }
 }
