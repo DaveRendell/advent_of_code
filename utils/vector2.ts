@@ -81,15 +81,15 @@ export default class Vector2 {
   }
 
   toString(): string {
-    return `[x: ${this.x}, y:${this.y}]`
+    return `[x: ${this.x}, y: ${this.y}]`
   }
 
   rotateRight(): Vector2 {
-    return new Vector2(this.y, -this.x)
+    return new Vector2(-this.y, this.x)
   }
 
   rotateLeft(): Vector2 {
-    return new Vector2(-this.y, this.x)
+    return new Vector2(this.y, -this.x)
   }
 
   up(): Vector2 { return this.add(Vector2.UP) }
