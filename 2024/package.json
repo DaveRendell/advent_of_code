@@ -5,6 +5,7 @@
     "day3": "ts-node 3_mull_it_over/main.ts ",
     "day4": "ts-node 4_ceres_search/main.ts ",
     "day5": "ts-node 5_print_queue/main.ts ",
-    "day6": "ts-node 6_guard_gallivant/main.ts "
+    "day6": "ts-node 6_guard_gallivant/main.ts ",
+    "day7": "ts-node 7_bridge_repair/main.ts "
   }
 }
