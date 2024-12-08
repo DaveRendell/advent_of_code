@@ -65,6 +65,10 @@ export default class Vector2 {
     return other.x === this.x && other.y === this.y
   }
 
+  copy(): Vector2 {
+    return new Vector2(this.x, this.y)
+  }
+
   inBounds(
     minX: number, maxX: number, minY: number, maxY: number
   ): boolean {
