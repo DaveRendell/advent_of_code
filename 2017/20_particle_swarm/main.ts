@@ -8,7 +8,7 @@ interface Particle {
   acceleration: number[],
 }
 
-const particles: Particle[] = readLines(__dirname, inputFile())
+let particles: Particle[] = readLines(__dirname, inputFile())
   .map(line => {
     const [position, velocity, acceleration] = line.split(", ")
       .map(str => str.slice(3).slice(0, -1).split(",").map(str => Number(str)))
@@ -28,10 +28,10 @@ const longTermDistanceSortAsc = (a: Particle, b: Particle): number => {
    + Math.sign(posDistance)
 }
 
-let bestParticleId = 0
+let closestParticleId = 0
 particles.forEach((particle, i) => {
-  if (longTermDistanceSortAsc(particle, particles[bestParticleId]) < 0) {
-    bestParticleId = i
+  if (longTermDistanceSortAsc(particle, particles[closestParticleId]) < 0) {
+    closestParticleId = i
   }
 })
 /**
@@ -42,6 +42,35 @@ particles.forEach((particle, i) => {
  *     = p + nv + n(n+1)a / 2
  */
 
-console.log("(P1): ", bestParticleId)
+console.log("(P1): ", closestParticleId)
 
-console.log("(P2): ", 0)
+const increment = (particle: Particle): void => {
+  for (let dimension = 0; dimension < 3; dimension++) {
+    particle.velocity[dimension] += particle.acceleration[dimension]
+    particle.position[dimension] += particle.velocity[dimension]
+  }
+}
+
+const areEqual = (a: number[], b: number[]): boolean =>
+  a.every((x, i) => x === b[i])
+
+let step = 0
+
+while (step++ < 1_000) {
+  particles.forEach(particle => increment(particle))
+  const collisionIds = new Set<number>()
+  particles.forEach((particle1, i1) =>
+    particles.slice(i1 + 1).forEach((particle2, i2) => {
+      if (areEqual(particle1.position, particle2.position)) {
+        collisionIds.add(i1)
+        collisionIds.add(i2 + i1 + 1)
+      }
+    })
+  )
+  if (collisionIds.size > 0) {
+    particles = particles.filter((_, i) => !collisionIds.has(i))
+    console.log(`Step ${step} - ${collisionIds.size} colliding particles - ${particles.length} particles left`)
+  }
+}
+
+console.log("(P2): ", particles.length)
