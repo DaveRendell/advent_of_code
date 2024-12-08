@@ -118,4 +118,11 @@ export class VectorMap<T> extends HashMap<Vector2, T> {
   constructor(data: [Vector2, T][] = []) {
     super(v => v.toString(), data)
   }
+
+  static fromGrid<T>(input: T[][]): VectorMap<T> {
+    const out = new VectorMap<T>()
+    input.forEach((row, y) =>
+      row.forEach((element, x) => out.set(new Vector2(x, y), element)))
+    return out
+  }
 }
