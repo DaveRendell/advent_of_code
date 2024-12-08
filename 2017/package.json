@@ -19,6 +19,7 @@
     "day17": "ts-node 17_spinlock/main.ts $1",
     "day18": "ts-node 18_duet/main.ts $1",
     "day19": "ts-node 19_a_series_of_tubes/main.ts $1",
-    "day20": "ts-node 20_particle_swarm/main.ts $1"
+    "day20": "ts-node 20_particle_swarm/main.ts $1",
+    "day21": "ts-node 21_fractal_art/main.ts $1"
   }
 }
