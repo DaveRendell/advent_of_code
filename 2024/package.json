@@ -7,6 +7,7 @@
     "day5": "ts-node 5_print_queue/main.ts ",
     "day6": "ts-node 6_guard_gallivant/main.ts ",
     "day7": "ts-node 7_bridge_repair/main.ts ",
-    "day8": "ts-node 8_resonant_colinearity/main.ts "
+    "day8": "ts-node 8_resonant_colinearity/main.ts ",
+    "day9": "ts-node 9_disk_fragmenter/main.ts "
   }
 }
