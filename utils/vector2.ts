@@ -1,6 +1,5 @@
 import HashMap from "./hashmap"
 import HashSet from "./hashset"
-import { positiveMod } from "./numbers"
 
 export default class Vector2 {
   x: number
