@@ -9,6 +9,7 @@
     "day7": "ts-node 7_bridge_repair/main.ts ",
     "day8": "ts-node 8_resonant_colinearity/main.ts ",
     "day9": "ts-node 9_disk_fragmenter/main.ts ",
-    "day10": "ts-node 10_hoof_it/main.ts "
+    "day10": "ts-node 10_hoof_it/main.ts ",
+    "day11": "ts-node 11_plutonian_pebbles/main.ts "
   }
 }
