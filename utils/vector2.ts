@@ -95,6 +95,10 @@ export default class Vector2 {
     return new Vector2(this.y, -this.x)
   }
 
+  reverse(): Vector2 {
+    return new Vector2(-this.x, -this.y)
+  }
+
   up(): Vector2 { return this.add(Vector2.UP) }
   down(): Vector2 { return this.add(Vector2.DOWN) }
   left(): Vector2 { return this.add(Vector2.LEFT) }

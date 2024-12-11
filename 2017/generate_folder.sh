@@ -9,4 +9,4 @@ mkdir $FOLDER
 touch $FOLDER/sample.txt
 touch $FOLDER/input.txt
 cp template.ts $FOLDER/main.ts
-npx npmAddScript -k "day$NUMBER" -v "ts-node $FOLDER/main.ts \$1"
+npx npmAddScript -k "day$NUMBER" -v "bun $FOLDER/main.ts \$1"
