@@ -1,15 +1,15 @@
 {
   "scripts": {
-    "day1": "ts-node 1_historian_hysteria/main.ts ",
-    "day2": "ts-node 2_red_nosed_reports/main.ts ",
-    "day3": "ts-node 3_mull_it_over/main.ts ",
-    "day4": "ts-node 4_ceres_search/main.ts ",
-    "day5": "ts-node 5_print_queue/main.ts ",
-    "day6": "ts-node 6_guard_gallivant/main.ts ",
-    "day7": "ts-node 7_bridge_repair/main.ts ",
-    "day8": "ts-node 8_resonant_colinearity/main.ts ",
-    "day9": "ts-node 9_disk_fragmenter/main.ts ",
-    "day10": "ts-node 10_hoof_it/main.ts ",
-    "day11": "ts-node 11_plutonian_pebbles/main.ts "
+    "day1": "bun 1_historian_hysteria/main.ts ",
+    "day2": "bun 2_red_nosed_reports/main.ts ",
+    "day3": "bun 3_mull_it_over/main.ts ",
+    "day4": "bun 4_ceres_search/main.ts ",
+    "day5": "bun 5_print_queue/main.ts ",
+    "day6": "bun 6_guard_gallivant/main.ts ",
+    "day7": "bun 7_bridge_repair/main.ts ",
+    "day8": "bun 8_resonant_colinearity/main.ts ",
+    "day9": "bun 9_disk_fragmenter/main.ts ",
+    "day10": "bun 10_hoof_it/main.ts ",
+    "day11": "bun 11_plutonian_pebbles/main.ts "
   }
 }
