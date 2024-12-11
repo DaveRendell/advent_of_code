@@ -10,3 +10,4 @@ touch $FOLDER/sample.txt
 touch $FOLDER/input.txt
 cp template.ts $FOLDER/main.ts
 npx npmAddScript -k "day$NUMBER" -v "bun $FOLDER/main.ts \$1"
+code $FOLDER/*
