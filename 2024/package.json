@@ -11,6 +11,7 @@
     "day9": "bun 9_disk_fragmenter/main.ts ",
     "day10": "bun 10_hoof_it/main.ts ",
     "day11": "bun 11_plutonian_pebbles/main.ts ",
-    "day12": "bun 12_garden_groups/main.ts "
+    "day12": "bun 12_garden_groups/main.ts ",
+    "day13": "bun 13_claw_contraption/main.ts "
   }
 }

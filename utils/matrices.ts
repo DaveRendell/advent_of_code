@@ -33,3 +33,17 @@ const Y = [
 
 export const scale = (factor: number, matrix: number[][]): number[][] =>
   matrix.map(row => row.map(i => i * factor))
+
+export const determinant2 = (matrix: number[][]): number => {
+  const [[a, b], [c, d]] = matrix
+  return a*d - b*c
+}
+
+export const inverse2 = (matrix: number[][]): number[][] => {
+  const [[a, b], [c, d]] = matrix
+
+  return scale(
+    1 / determinant2(matrix),
+    [[d, -b], [-c, a]]
+  )
+}
