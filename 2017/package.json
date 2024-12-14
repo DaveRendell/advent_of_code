@@ -21,6 +21,7 @@
     "day19": "bun 19_a_series_of_tubes/main.ts $1",
     "day20": "bun 20_particle_swarm/main.ts $1",
     "day21": "bun 21_fractal_art/main.ts $1",
-    "day22": "bun 22_sporifica_virus/main.ts $1"
+    "day22": "bun 22_sporifica_virus/main.ts $1",
+    "day23": "bun 23_coprocessor_conflagration/main.ts $1"
   }
 }
