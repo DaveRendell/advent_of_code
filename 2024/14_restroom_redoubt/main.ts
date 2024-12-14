@@ -66,29 +66,22 @@ const display = (step: number): string[] => {
   )
 }
 
-const positionsContainLine = (step: number): boolean => {
-  const lineLength = 7
-  const positions = getPositionGrid(step)
-  return positions.some((row, y) =>
-    range(0, row.length - lineLength).some(x =>
-      range(0, lineLength).every(i =>
-        positions[y][x + i] > 0
-      )
-    )
-  )
-}
-
 const upperBound = robots
   .flatMap(robot => robot.uniquePositionCounts)
   .reduce(lcm, 1)
 
 console.log("Unique positions:", upperBound)
 
-let i = 0
-do {
-  if (i % 1000 === 0) { console.log("Tried positions", i, "/", upperBound)}
-  i++
-} while (!positionsContainLine(i) && i < upperBound)
-display(i).forEach(line => console.log(line))
+let lowestScore = Infinity
+let lowestScoreStep = -1
+for (let i = 0; i < upperBound; i++) {
+  const score = getSafetyScore(i)
+  if (score < lowestScore) {
+    lowestScore = score
+    lowestScoreStep = i
+  }
+}
 
-console.log("(P2): ", i)
+display(lowestScoreStep).forEach(line => console.log(line))
+
+console.log("(P2): ", lowestScoreStep)
