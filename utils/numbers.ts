@@ -23,6 +23,10 @@ export const lcm = (a: number, b: number): number => {
   return m
 }
 
+export const hcf = (a: number, b: number): number => {
+  return (a * b) / lcm(a, b)
+}
+
 export const factors = (n: number): number[] => {
   let out = [1, n]
   for (let k = 2; k <= n / 2; k++) {

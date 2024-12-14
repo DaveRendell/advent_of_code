@@ -12,6 +12,7 @@
     "day10": "bun 10_hoof_it/main.ts ",
     "day11": "bun 11_plutonian_pebbles/main.ts ",
     "day12": "bun 12_garden_groups/main.ts ",
-    "day13": "bun 13_claw_contraption/main.ts "
+    "day13": "bun 13_claw_contraption/main.ts ",
+    "day14": "bun 14_restroom_redoubt/main.ts "
   }
 }
