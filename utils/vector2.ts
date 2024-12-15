@@ -1,5 +1,6 @@
 import HashMap from "./hashmap"
 import HashSet from "./hashset"
+import { inclusiveRange, range } from "./numbers"
 
 export default class Vector2 {
   x: number
@@ -120,6 +121,28 @@ export class VectorSet extends HashSet<Vector2> {
 export class VectorMap<T> extends HashMap<Vector2, T> {
   constructor(data: [Vector2, T][] = []) {
     super(v => v.toString(), data)
+  }
+
+  bounds(): number[][] {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+    for (const [{ x, y }] of this.entries()) {
+      if (x < minX) { minX = x }
+      if (x > maxX) { maxX = x }
+      if (y < minY) { minY = y }
+      if (y > maxY) { maxY = y }
+    }
+    return [[minX, maxX], [minY, maxY]]
+  }
+
+  draw(
+    separator: string = " ",
+    render: (t: T) => string = (t) => String(t)
+  ): string[] {
+    const [[minX, maxX], [minY, maxY]] = this.bounds()
+    return inclusiveRange(minY, maxY).map(y =>
+      inclusiveRange(minX, maxX).map(x =>
+        render(this.get(new Vector2(x, y)))).join(separator)
+    )
   }
 
   static fromGrid<T>(input: T[][]): VectorMap<T> {
