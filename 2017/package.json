@@ -23,6 +23,7 @@
     "day21": "bun 21_fractal_art/main.ts $1",
     "day22": "bun 22_sporifica_virus/main.ts $1",
     "day23": "bun 23_coprocessor_conflagration/main.ts $1",
-    "day24": "bun 24_electromagnetic_moat/main.ts $1"
+    "day24": "bun 24_electromagnetic_moat/main.ts $1",
+    "day25": "bun 25_the_halting_problem/main.ts $1"
   }
 }
