@@ -1,7 +1,6 @@
-import readLines from "../../utils/readLines"
 import inputFile from "../../utils/inputFile"
 import readNumbersFromLines from "../../utils/readNumbersFromLines"
-import { chunks, min } from "../../utils/reducers"
+import { range } from "../../utils/numbers"
 
 const input = readNumbersFromLines(__dirname, inputFile())
 
@@ -74,66 +73,16 @@ const run = (
 
 console.log("(P1): ", run(program, registers))
 
-const assem = program.reduce(chunks(2), [[]])
-  .map(([opCode, literal]) => {
-    const combo = literal < 4
-      ? literal
-      : "abc"[literal - 4]
-    switch (opCode) {
-      case 0: return `adv ${combo}`
-      case 1: return `bxl ${literal}`
-      case 2: return `bst ${combo}`
-      case 3: return `jnz ${literal}`
-      case 4: return `bxc`
-      case 5: return `out ${combo}`
-      case 6: return `bdv ${combo}`
-      case 7: return `cdv ${combo}`
-    }
-  })
-console.log("Program assembly:")
-console.log(assem.join("\n"))
-
-/*
-bst a
-bxl 3
-cdv b
-bxl 5
-adv 3
-bxc
-out b
-jnz 0
-*/
-
-/*
-b = a & 0x7
-b = b ^ 0b11
-c = a >> b
-b = b ^ 0b101
-a = a >> 3
-b = b ^ c
-out b
-back to start
-*/
-
 let possibleAs = [BigInt(0)];
-([...program]).reverse().forEach((chunk, j) => {
-  let newPossibleAs = []
-  for (const a of possibleAs) {
-    for (let i = 0; i < 8; i++) {
-      let possibleA = (a * BigInt(8)) | BigInt(i)
-      let b = possibleA & BigInt(0x7)
-      b ^= BigInt(3)
-      let c = possibleA >> b
-      b ^= BigInt(5)
-      if (BigInt(chunk) === ((c ^ b) & BigInt(0x7))) {
-        newPossibleAs.push(possibleA)
-      }
-    }
-  }
-  
-  if (newPossibleAs.length === 0) { throw new Error("No new possible As found")}
-
-  possibleAs = newPossibleAs
+([...program]).reverse().forEach((_, j, reversed) => {
+  possibleAs = possibleAs.flatMap(a =>
+    range(0, 8)
+      .map(i => (a << BigInt(3)) | BigInt(i)))
+      .filter(possibleA => {
+        const actual = run(program, { a: possibleA, b: BigInt(0), c: BigInt(0) })
+        const expected = reversed.slice(0, j + 1).reverse().join(",")
+        return actual === expected
+      })
 })
 
 const a = possibleAs.reduce((a, b) => a < b ? a : b)
