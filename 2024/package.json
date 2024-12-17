@@ -15,6 +15,7 @@
     "day13": "bun 13_claw_contraption/main.ts ",
     "day14": "bun 14_restroom_redoubt/main.ts ",
     "day15": "bun 15_warehouse_woes/main.ts ",
-    "day16": "bun 16_reindeer_maze/main.ts "
+    "day16": "bun 16_reindeer_maze/main.ts ",
+    "day17": "bun 17_chronospatial_computer/main.ts "
   }
 }
