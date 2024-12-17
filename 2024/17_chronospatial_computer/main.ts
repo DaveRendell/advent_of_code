@@ -1,32 +1,29 @@
 import readLines from "../../utils/readLines"
 import inputFile from "../../utils/inputFile"
 import readNumbersFromLines from "../../utils/readNumbersFromLines"
-import { chunks } from "../../utils/reducers"
+import { chunks, min } from "../../utils/reducers"
 
 const input = readNumbersFromLines(__dirname, inputFile())
 
-const registers = {
-  a: input[0][0],
-  b: input[1][0],
-  c: input[2][0],
+const registers: Record<string, bigint> = {
+  a: BigInt(input[0][0]),
+  b: BigInt(input[1][0]),
+  c: BigInt(input[2][0]),
 }
 
 const program = input[4]
 
 const run = (
   program: number[],
-  registers: Record<string, number>,
-  matchProgram: boolean = false
+  registers: Record<string, bigint>
 ): string => {
   let pointer = 0
-  const output: number[] = []
+  const output: bigint[] = []
 
-  let matchPointer = 0
-
-  const getCombo = (operand: number): number =>
+  const getCombo = (operand: number): bigint =>
     operand < 4
-      ? operand
-      : registers["abc"[operand - 4]]
+      ? BigInt(operand)
+      : BigInt(registers["abc"[operand - 4]])
 
   executionLoop:
   while (pointer < program.length) {
@@ -39,11 +36,11 @@ const run = (
         pointer += 2
         continue executionLoop
       case 1: //bxl
-        registers.b = registers.b ^ literal
+        registers.b = registers.b ^ BigInt(literal)
         pointer += 2
         continue executionLoop
       case 2: //bst
-        registers.b = getCombo(literal) & 0x7
+        registers.b = getCombo(literal) & BigInt(0x7)
         pointer += 2
         continue executionLoop
       case 3: //jnz
@@ -58,12 +55,7 @@ const run = (
         pointer += 2
         continue executionLoop
       case 5: //out
-        output.push(getCombo(literal) & 0x7)
-        if (matchProgram) {
-          if ((getCombo(literal) & 0x7) !== program[matchPointer++]) {
-            return "NO MATCH"
-          }
-        }
+        output.push(getCombo(literal) & BigInt(0x7))
         pointer += 2
         continue executionLoop
       case 6: //bdv
@@ -79,8 +71,6 @@ const run = (
 
   return output.join(",")
 }
-
-console.log({ registers, program })
 
 console.log("(P1): ", run(program, registers))
 
@@ -100,7 +90,7 @@ const assem = program.reduce(chunks(2), [[]])
       case 7: return `cdv ${combo}`
     }
   })
-
+console.log("Program assembly:")
 console.log(assem.join("\n"))
 
 /*
@@ -125,18 +115,31 @@ out b
 back to start
 */
 
-/*
-take each 3 bit chunk of a, starting with lowest, [x y z]
-b = [x ~y ~z]
-c = a >> [x ~y ~z] (a >> [x ~y ~z])
-b = [~x ~y z]
-out (a >> [x ~y ~z]) ^ [~x ~y z]
-*/
+let possibleAs = [BigInt(0)];
+([...program]).reverse().forEach((chunk, j) => {
+  let newPossibleAs = []
+  for (const a of possibleAs) {
+    for (let i = 0; i < 8; i++) {
+      let possibleA = (a * BigInt(8)) | BigInt(i)
+      let b = possibleA & BigInt(0x7)
+      b ^= BigInt(3)
+      let c = possibleA >> b
+      b ^= BigInt(5)
+      if (BigInt(chunk) === ((c ^ b) & BigInt(0x7))) {
+        newPossibleAs.push(possibleA)
+      }
+    }
+  }
+  
+  if (newPossibleAs.length === 0) { throw new Error("No new possible As found")}
 
-/*
-2 => 010
+  possibleAs = newPossibleAs
+})
 
-*/
+const a = possibleAs.reduce((a, b) => a < b ? a : b)
 
+console.log("(P2): ", String(a))
 
-console.log("(P2): ", 0)
+// Verify
+console.log("expected\t", program.join(","))
+console.log("actual\t\t", run(program, {a, b: BigInt(0), c: BigInt(0)}))
