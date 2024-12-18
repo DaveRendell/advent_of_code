@@ -1,3 +1,4 @@
+import HashMap from "./hashmap"
 import PriorityQueue from "./priorityQueue"
 import Queue from "./queue"
 import Vector2, { VectorMap } from "./vector2"
@@ -34,22 +35,21 @@ export function findLowestCostsOld<T>(
   return costs
 }
 
-// TODO: Make generic rather than using Vector2?
-// TODO: Get PriorityQueue and heuristic working?
-export function findLowestCosts(
-  start: Vector2,
-  cost: (from: Vector2, to: Vector2, fromCost: number) => number,
-  neighbours: (position: Vector2) => Vector2[] = (position) => position.neighbours4(),
-): VectorMap<number> {
-  const costs = new VectorMap<number>([[start, 0]], Infinity)
-  const updates = new Queue<Vector2>() //(heuristic)
+export function findLowestCosts<Node>(
+  hash: (node: Node) => string,
+  start: Node,
+  cost: (from: Node, to: Node) => number,
+  neighbours: (position: Node) => Node[],
+): HashMap<Node, number> {
+  const costs = new HashMap<Node, number>(hash, [[start, 0]], Infinity)
+  const updates = new Queue<Node>() //(heuristic)
   updates.add(start)
 
   while (updates.hasNext()) {
     const update = updates.receive()
     const updateCost = costs.get(update)
     neighbours(update).forEach(neighbour => {
-      const newCost = cost(update, neighbour, updateCost)
+      const newCost = updateCost + cost(update, neighbour)
       const existingCost = costs.get(neighbour)
       if (newCost < existingCost) {
         costs.set(neighbour, newCost)
@@ -59,4 +59,20 @@ export function findLowestCosts(
   }
 
   return costs
+}
+
+// TODO: Get PriorityQueue and heuristic working?
+export function findLowestCostsGrid(
+  start: Vector2,
+  cost: (from: Vector2, to: Vector2) => number,
+  neighbours: (position: Vector2) => Vector2[] = (position) => position.neighbours4(),
+): VectorMap<number> {
+  return new VectorMap(
+    findLowestCosts(
+      v => v.toString(),
+      start,
+      cost,
+      neighbours
+    ).entries(),
+  Infinity)
 }

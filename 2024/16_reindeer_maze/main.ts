@@ -1,5 +1,6 @@
 import HashMap from "../../utils/hashmap"
 import inputFile from "../../utils/inputFile"
+import { findLowestCosts } from "../../utils/pathFinding"
 import Queue from "../../utils/queue"
 import readCharArray from "../../utils/readCharArray"
 import { min } from "../../utils/reducers"
@@ -12,36 +13,6 @@ const endPosition = maze.entries().find(([_, value]) => value === "E")[0]
 interface State {
   position: Vector2,
   direction: Vector2
-}
-
-const findCosts = (): HashMap<State, number> => {
-  const startState = { position: startPosition, direction: Vector2.RIGHT }
-  const costs = new HashMap<State, number>(JSON.stringify, [])
-  costs.set(startState, 0)
-  const updates = new Queue<State>()
-  updates.add(startState)
-
-  while (updates.hasNext()) {
-    const { position, direction } = updates.receive()
-    const score = costs.get({ position, direction })
-    const nextStates: { state: State, delta: number}[] = [
-      {state: { position, direction: direction.rotateRight() }, delta: 1000},
-      {state: { position, direction: direction.rotateLeft() }, delta: 1000},
-      ...(maze.get(position.add(direction)) !== "#"
-        ? [{state: { position: position.add(direction), direction }, delta: 1}]
-        : []
-      )
-    ] as const
-
-    nextStates.forEach(({state, delta}) => {
-      if (costs.get(state) === undefined || costs.get(state) > score + delta) {
-        costs.set(state, score + delta)
-        updates.add(state)
-      }
-    })
-  }
-
-  return costs
 }
 
 const findLowestScore = (costs: HashMap<State, number>): number => costs.entries()
@@ -85,6 +56,18 @@ const findSpacesOnBestPath = (costs: HashMap<State, number>): number => {
   return goodSeats.size
 }
 
-const costs = findCosts()
+const costs = findLowestCosts<State>(
+  (state: State) => JSON.stringify(state),
+  { position: startPosition, direction: Vector2.RIGHT },
+  (from: State, to: State) => from.direction.equals(to.direction) ? 1 : 1000,
+  ({ position, direction }: State) => [
+    { position, direction: direction.rotateRight() },
+    { position, direction: direction.rotateLeft() },
+    ...(maze.get(position.add(direction)) !== "#"
+      ? [{ position: position.add(direction), direction }]
+      : []
+    )
+  ]
+)
 console.log("(P1): ", findLowestScore(costs))
 console.log("(P2): ", findSpacesOnBestPath(costs))

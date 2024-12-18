@@ -1,5 +1,5 @@
 import inputFile from "../../utils/inputFile"
-import { findLowestCosts } from "../../utils/pathFinding"
+import { findLowestCostsGrid } from "../../utils/pathFinding"
 import readNumbersFromLines from "../../utils/readNumbersFromLines"
 import sampleSpecificValue from "../../utils/sampleSpecificValue"
 import Vector2 from "../../utils/vector2"
@@ -10,13 +10,13 @@ const bytes = readNumbersFromLines(__dirname, inputFile())
 const size = sampleSpecificValue(6, 70)
 const p1ByteSize = sampleSpecificValue(12, 1024)
 
-const costs = (time: number) => (_: Vector2, to: Vector2, fromCost: number): number => {
+const costs = (time: number) => (_: Vector2, to: Vector2): number => {
   if (!to.inBounds(0, size, 0, size)) { return Infinity }
   if (bytes.slice(0, time).some(byte => byte.equals(to))) { return Infinity }
-  return fromCost + 1
+  return 1
 }
 
-const minimumStepsP1 = findLowestCosts(
+const minimumStepsP1 = findLowestCostsGrid(
   new Vector2(0, 0),
   costs(p1ByteSize),
 ).at(size, size)
@@ -28,7 +28,7 @@ let upperBound = bytes.length
 
 while (lowerBound + 1 < upperBound) {
   const testValue = Math.floor((lowerBound + upperBound) / 2)
-  const minimumSteps = findLowestCosts(
+  const minimumSteps = findLowestCostsGrid(
     new Vector2(0, 0),
     costs(testValue),
   ).at(size, size)
