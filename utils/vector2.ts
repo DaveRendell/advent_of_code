@@ -119,8 +119,15 @@ export class VectorSet extends HashSet<Vector2> {
 }
 
 export class VectorMap<T> extends HashMap<Vector2, T> {
-  constructor(data: [Vector2, T][] = []) {
+  defaultValue
+  constructor(data: [Vector2, T][] = [], defaultValue: T = undefined) {
     super(v => v.toString(), data)
+    this.defaultValue = defaultValue
+  }
+
+  override get(key: Vector2): T {
+    const stored = super.get(key)
+    return stored === undefined ? this.defaultValue : stored
   }
 
   bounds(): number[][] {

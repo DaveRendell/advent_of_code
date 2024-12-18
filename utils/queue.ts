@@ -1,7 +1,7 @@
 export default class Queue<T> {
   length: number
-  private front?: QueueNode<T>
-  private back?: QueueNode<T>
+  protected front?: QueueNode<T>
+  protected back?: QueueNode<T>
 
   constructor() {
     this.length = 0
@@ -19,6 +19,10 @@ export default class Queue<T> {
   }
 
   receive(): T {
+    if (this.front === undefined) {
+      console.log(this)
+      throw new Error("Cannot receive empty queue")
+    }
     const { value } = this.front
     this.front = this.front.behind
     if (this.front) { this.front.ahead = undefined }
@@ -35,7 +39,7 @@ export default class Queue<T> {
   }
 }
 
-interface QueueNode<T> {
+export interface QueueNode<T> {
   ahead?: QueueNode<T> | undefined,
   behind?: QueueNode<T> | undefined,
   value: T

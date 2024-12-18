@@ -1,3 +1,6 @@
+import PriorityQueue from "./priorityQueue"
+import Queue from "./queue"
+import Vector2, { VectorMap } from "./vector2"
 
 type Coordinate = [number, number]
 
@@ -28,5 +31,30 @@ export function findLowestCosts<T>(
     }
     updates = newUpdates
   }
+  return costs
+}
+
+export function findLowestCostsVMap<T>(
+  start: Vector2,
+  cost: (from: Vector2, to: Vector2, fromCost: number) => number,
+  neighbours: (position: Vector2) => Vector2[] = (position) => position.neighbours4(),
+): VectorMap<number> {
+  const costs = new VectorMap<number>([[start, 0]], Infinity)
+  const updates = new Queue<Vector2>() //(heuristic)
+  updates.add(start)
+
+  while (updates.hasNext()) {
+    const update = updates.receive()
+    const updateCost = costs.get(update)
+    neighbours(update).forEach(neighbour => {
+      const newCost = cost(update, neighbour, updateCost)
+      const existingCost = costs.get(neighbour)
+      if (newCost < existingCost) {
+        costs.set(neighbour, newCost)
+        updates.add(neighbour)
+      }
+    })
+  }
+
   return costs
 }
