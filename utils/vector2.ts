@@ -130,6 +130,10 @@ export class VectorMap<T> extends HashMap<Vector2, T> {
     return stored === undefined ? this.defaultValue : stored
   }
 
+  at(x: number, y: number): T {
+    return this.get(new Vector2(x, y))
+  }
+
   bounds(): number[][] {
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
     for (const [{ x, y }] of this.entries()) {

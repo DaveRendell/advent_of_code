@@ -4,7 +4,7 @@ import Vector2, { VectorMap } from "./vector2"
 
 type Coordinate = [number, number]
 
-export function findLowestCosts<T>(
+export function findLowestCostsOld<T>(
   grid: T[][],
   start: Coordinate,
   cost: (from: Coordinate, to: Coordinate) => number
@@ -34,7 +34,9 @@ export function findLowestCosts<T>(
   return costs
 }
 
-export function findLowestCostsVMap<T>(
+// TODO: Make generic rather than using Vector2?
+// TODO: Get PriorityQueue and heuristic working?
+export function findLowestCosts(
   start: Vector2,
   cost: (from: Vector2, to: Vector2, fromCost: number) => number,
   neighbours: (position: Vector2) => Vector2[] = (position) => position.neighbours4(),

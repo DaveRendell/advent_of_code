@@ -1,6 +1,6 @@
 import readLines from "../../utils/readLines"
 import inputFile from "../../utils/inputFile"
-import { findLowestCosts } from "../../utils/pathFinding"
+import { findLowestCostsOld } from "../../utils/pathFinding"
 import { range } from "../../utils/numbers"
 import { ascending } from "../../utils/sorters"
 
@@ -14,7 +14,7 @@ function partOne() {
   const grid = input.map(line =>
     [...line.replaceAll("S", "a").replaceAll("E", "z")])
   
-  const costs = findLowestCosts(
+  const costs = findLowestCostsOld(
     grid,
     [startX, startY],
     ([fromX, fromY], [toX, toY]) => {
@@ -36,7 +36,7 @@ function partTwo() {
   const grid = input.map(line =>
     [...line.replaceAll("S", "a").replaceAll("E", "z")])
   
-  const costs = findLowestCosts(
+  const costs = findLowestCostsOld(
     grid,
     [startX, startY],
     ([fromX, fromY], [toX, toY]) => {

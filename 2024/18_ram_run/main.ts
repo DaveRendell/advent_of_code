@@ -1,5 +1,5 @@
 import inputFile from "../../utils/inputFile"
-import { findLowestCostsVMap } from "../../utils/pathFinding"
+import { findLowestCosts } from "../../utils/pathFinding"
 import readNumbersFromLines from "../../utils/readNumbersFromLines"
 import sampleSpecificValue from "../../utils/sampleSpecificValue"
 import Vector2 from "../../utils/vector2"
@@ -16,10 +16,10 @@ const costs = (time: number) => (_: Vector2, to: Vector2, fromCost: number): num
   return fromCost + 1
 }
 
-const minimumStepsP1 = findLowestCostsVMap(
+const minimumStepsP1 = findLowestCosts(
   new Vector2(0, 0),
   costs(p1ByteSize),
-).get(new Vector2(size, size))
+).at(size, size)
 
 console.log("(P1): ", minimumStepsP1)
 
@@ -28,10 +28,10 @@ let upperBound = bytes.length
 
 while (lowerBound + 1 < upperBound) {
   const testValue = Math.floor((lowerBound + upperBound) / 2)
-  const minimumSteps = findLowestCostsVMap(
+  const minimumSteps = findLowestCosts(
     new Vector2(0, 0),
     costs(testValue),
-  ).get(new Vector2(size, size))
+  ).at(size, size)
   if (minimumSteps === Infinity) {
     upperBound = testValue
   } else {

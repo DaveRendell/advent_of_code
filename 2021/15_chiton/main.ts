@@ -1,11 +1,11 @@
 import inputFile from "../../utils/inputFile"
 import { range } from "../../utils/numbers"
-import { findLowestCosts } from "../../utils/pathFinding"
+import { findLowestCostsOld } from "../../utils/pathFinding"
 import readDigitGrid from "../../utils/readDigitGrid"
 
 function partOne() {
   const grid = readDigitGrid(__dirname, inputFile())
-  const lowestRisk = findLowestCosts(
+  const lowestRisk = findLowestCostsOld(
     grid,
     [0, 0],
     (_, [toX, toY]) => grid[toY][toX])
@@ -16,7 +16,7 @@ function partOne() {
 function partTwo() {
   const grid = readDigitGrid(__dirname, inputFile())
   const expandedGrid = expandMap(grid)
-  const lowestRisk = findLowestCosts(
+  const lowestRisk = findLowestCostsOld(
     expandedGrid,
     [0, 0],
     (_, [toX, toY]) => expandedGrid[toY][toX])
