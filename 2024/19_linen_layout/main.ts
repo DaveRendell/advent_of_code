@@ -1,25 +1,19 @@
 import readLines from "../../utils/readLines"
 import inputFile from "../../utils/inputFile"
 import { sum } from "../../utils/reducers"
+import memoise from "../../utils/memoise"
 
 const input = readLines(__dirname, inputFile())
 const towels = input[0].split(", ")
 const patterns = input.slice(2)
 
-const cache = new Map<string, number>([["", 1]])
-
-const countPossibleArrangements = (pattern: string): number => {
-  if (cache.has(pattern)) { return cache.get(pattern) }
-
-  const result = towels.map(towel =>
+const countPossibleArrangements = memoise((pattern: string): number =>
+  towels.map(towel =>
     pattern.startsWith(towel)
       ? countPossibleArrangements(pattern.slice(towel.length))
       : 0
-  ).reduce(sum)
-
-  cache.set(pattern, result)
-  return result
-}
+  ).reduce(sum),
+  new Map<string, number>([["", 1]]))
 
 const arrangements = patterns.map(countPossibleArrangements)
 
