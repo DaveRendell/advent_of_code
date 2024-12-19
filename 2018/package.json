@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "day1": "bun 1_chronal_calibration/main.ts $1"
+    "day1": "bun 1_chronal_calibration/main.ts $1",
+    "day2": "bun 2_inventory_management_system/main.ts $1"
   }
 }
