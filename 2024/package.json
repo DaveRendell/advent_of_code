@@ -17,6 +17,7 @@
     "day15": "bun 15_warehouse_woes/main.ts ",
     "day16": "bun 16_reindeer_maze/main.ts ",
     "day17": "bun 17_chronospatial_computer/main.ts ",
-    "day18": "bun 18_ram_run/main.ts "
+    "day18": "bun 18_ram_run/main.ts ",
+    "day19": "bun 19_linen_layout/main.ts "
   }
 }
