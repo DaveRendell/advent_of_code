@@ -38,7 +38,7 @@ export function findLowestCostsOld<T>(
 export function findLowestCosts<Node>(
   hash: (node: Node) => string,
   start: Node,
-  cost: (from: Node, to: Node) => number,
+  cost: (from: Node, to: Node, fromCost: number) => number,
   neighbours: (position: Node) => Node[],
 ): HashMap<Node, number> {
   const costs = new HashMap<Node, number>(hash, [[start, 0]], Infinity)
@@ -49,7 +49,7 @@ export function findLowestCosts<Node>(
     const update = updates.receive()
     const updateCost = costs.get(update)
     neighbours(update).forEach(neighbour => {
-      const newCost = updateCost + cost(update, neighbour)
+      const newCost = updateCost + cost(update, neighbour, updateCost)
       const existingCost = costs.get(neighbour)
       if (newCost < existingCost) {
         costs.set(neighbour, newCost)
@@ -64,7 +64,7 @@ export function findLowestCosts<Node>(
 // TODO: Get PriorityQueue and heuristic working?
 export function findLowestCostsGrid(
   start: Vector2,
-  cost: (from: Vector2, to: Vector2) => number,
+  cost: (from: Vector2, to: Vector2, fromCost: number) => number,
   neighbours: (position: Vector2) => Vector2[] = (position) => position.neighbours4(),
 ): VectorMap<number> {
   return new VectorMap(
