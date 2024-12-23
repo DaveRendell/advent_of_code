@@ -4,7 +4,7 @@ export default function memoise<
 >(
   method: (...args: Arguments) => Return,
   store: Map<string, Return>,
-  serialise: (args: Arguments) => string = (args) => args.toString()
+  serialise: (args: Arguments) => string = (args) => JSON.stringify(args)
 ): (...args: Arguments) => Return {
   return (...args: Arguments) => {
     const key = serialise(args)

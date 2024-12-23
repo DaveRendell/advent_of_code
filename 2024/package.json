@@ -21,6 +21,7 @@
     "day19": "bun 19_linen_layout/main.ts ",
     "day20": "bun 20_race_condition/main.ts ",
     "day21": "bun 21_keypad_conundrum/main.ts ",
-    "day22": "bun 22_monkey_market/main.ts "
+    "day22": "bun 22_monkey_market/main.ts ",
+    "day23": "bun 23_lan_party/main.ts "
   }
 }
