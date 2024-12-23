@@ -23,18 +23,6 @@ console.log("(P1): ", secrets.map(updateTimes(2000)).reduce(sum))
 
 const data = new Map<string, Uint8Array>()
 
-// Initialise monster data set
-for (let i = -9; i < 10; i++) {
-  for (let j = -9; j < 10; j++) {
-    for (let k = -9; k < 10; k++) {
-      for (let l = -9; l < 10; l++) {
-        const key = [i, j, k, l].map(String).join(",")
-        data.set(key, new Uint8Array(secrets.length).fill(0))
-      }
-    }
-  }
-}
-
 secrets.forEach((secret, secretId) => {
   const seen = new Set<string>()
   const last5 = []
@@ -55,6 +43,7 @@ secrets.forEach((secret, secretId) => {
       const key = diffs.map(String).join(",")
       if (!seen.has(key)) {
         seen.add(key)
+        if (!data.has(key)) { data.set(key, new Uint8Array(secrets.length).fill(0)) }
         data.get(key)[secretId] = secret % 10
       }
     }
