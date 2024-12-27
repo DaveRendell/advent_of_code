@@ -3,6 +3,7 @@
     "day1": "bun 1_chronal_calibration/main.ts $1",
     "day2": "bun 2_inventory_management_system/main.ts $1",
     "day3": "bun 3_no_matter_how_you_slice_it/main.ts $1",
-    "day4": "bun 4_repose_record/main.ts $1"
+    "day4": "bun 4_repose_record/main.ts $1",
+    "day5": "bun 5_alchemical_reduction/main.ts $1"
   }
 }
