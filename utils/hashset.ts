@@ -1,3 +1,5 @@
+import { isIntersectionTypeNode } from "../node_modules/typescript/lib/typescript"
+
 export default class HashSet<Item> {
   hash: (Item) => string
   size: number
@@ -31,5 +33,10 @@ export default class HashSet<Item> {
 
   entries(): Item[] {
     return [...this.data.values()]
+  }
+
+  intersect(other: HashSet<Item> | undefined): HashSet<Item> {
+    const newEntries = other === undefined ? this.entries() : this.entries().filter(a => other.has(a))
+    return new HashSet<Item>(this.hash, newEntries)
   }
 }
