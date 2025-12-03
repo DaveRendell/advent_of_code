@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "day1": "bun 1_secret_entrance/main.ts $1"
+  }
+}
