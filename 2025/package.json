@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "day1": "bun 1_secret_entrance/main.ts $1"
+    "day1": "bun 1_secret_entrance/main.ts $1",
+    "day2": "bun 2_gift_shop/main.ts $1"
   }
 }
