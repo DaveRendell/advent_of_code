@@ -39,6 +39,10 @@ export class Range {
     )
   }
 
+  overlaps(other: Range): boolean {
+    return other.start < this.end && other.end > this.start
+  }
+
   copy() {
     return new Range(this.start, this.end)
   }
