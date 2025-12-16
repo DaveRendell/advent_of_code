@@ -4,6 +4,7 @@
     "day2": "bun 2_gift_shop/main.ts $1",
     "day3": "bun 3_lobby/main.ts $1",
     "day4": "bun 4_printing_department/main.ts $1",
-    "day5": "bun 5_cafeteria/main.ts $1"
+    "day5": "bun 5_cafeteria/main.ts $1",
+    "day6": "bun 6_trash_compactor/main.ts $1"
   }
 }
