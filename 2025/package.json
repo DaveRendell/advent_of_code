@@ -7,6 +7,7 @@
     "day5": "bun 5_cafeteria/main.ts $1",
     "day6": "bun 6_trash_compactor/main.ts $1",
     "day7": "bun 7_laboratories/main.ts $1",
-    "day8": "bun 8_playground/main.ts $1"
+    "day8": "bun 8_playground/main.ts $1",
+    "day9": "bun 9_movie_theater/main.ts $1"
   }
 }

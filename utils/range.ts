@@ -65,4 +65,16 @@ export class Range {
   toArray(): number[] {
     return range(this.start, this.end)
   }
+
+  static inclusive(a: number, b: number): Range {
+    const min = Math.min(a, b)
+    const max = Math.max(a, b)
+    return new Range(min, max + 1)
+  }
+
+  static exclusive(a: number, b: number): Range {
+    const min = Math.min(a, b)
+    const max = Math.max(a, b)
+    return new Range(min + 1, max)
+  }
 }
