@@ -9,6 +9,7 @@
     "day7": "bun 7_laboratories/main.ts $1",
     "day8": "bun 8_playground/main.ts $1",
     "day9": "bun 9_movie_theater/main.ts $1",
-    "day10": "bun 10_factory/main.ts $1"
+    "day10": "bun 10_factory/main.ts $1",
+    "day11": "bun 11_reactor/main.ts $1"
   }
 }
