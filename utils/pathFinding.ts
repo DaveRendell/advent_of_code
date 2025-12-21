@@ -40,9 +40,11 @@ export function findLowestCosts<Node>(
   start: Node,
   cost: (from: Node, to: Node, fromCost: number) => number,
   neighbours: (position: Node) => Node[],
+  heuristic?: (node: Node) => number,
+  target?: Node
 ): HashMap<Node, number> {
   const costs = new HashMap<Node, number>(hash, [[start, 0]], Infinity)
-  const updates = new Queue<Node>() //(heuristic)
+  const updates = heuristic ? new PriorityQueue<Node>(heuristic) : new Queue<Node>()
   updates.add(start)
 
   while (updates.hasNext()) {
@@ -51,7 +53,8 @@ export function findLowestCosts<Node>(
     neighbours(update).forEach(neighbour => {
       const newCost = updateCost + cost(update, neighbour, updateCost)
       const existingCost = costs.get(neighbour)
-      if (newCost < existingCost) {
+      if (newCost < existingCost && (!target || newCost < costs.get(target))) {
+        console.log("set", neighbour, newCost)
         costs.set(neighbour, newCost)
         updates.add(neighbour)
       }

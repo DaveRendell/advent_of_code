@@ -1,4 +1,3 @@
-import { NodeBuilderFlags } from "../node_modules/typescript/lib/typescript";
 import Queue, { QueueNode } from "./queue";
 
 // Queue that inserts new elements so ones with a lower priority value come first
@@ -20,7 +19,7 @@ export default class PriorityQueue<T> extends Queue<T> {
       this.back = node
     } else {
       let cursor = this.back
-      while (cursor && this.priority(cursor.value) > this.priority(item)) {
+      while (cursor && this.priority(cursor.value) >= this.priority(item)) {
         cursor = cursor.ahead
       }
       if (cursor) {
@@ -38,10 +37,11 @@ export default class PriorityQueue<T> extends Queue<T> {
     }
     this.length++
     if (!node.behind && node !== this.back) {
-      console.log(node)
-      console.log(this.back === node)
-      console.log(this.back)
-      console.log(node.behind)
+      console.log("new node", node.value)
+      console.log("back", this.back)
+      while(this.hasNext()) {
+        console.log(this.receive())
+      }
       throw new Error("werwer")
     }
   }

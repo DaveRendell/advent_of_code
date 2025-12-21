@@ -3,7 +3,8 @@ import inputFile from "../../utils/inputFile"
 import HashMap from "../../utils/hashmap"
 import Queue from "../../utils/queue"
 import { findLowestCosts } from "../../utils/pathFinding"
-import { sum } from "../../utils/reducers"
+import { max, min, sum } from "../../utils/reducers"
+import { ascendingBy } from "../../utils/sorters"
 
 interface Input {
     targetLayout: boolean[]
@@ -20,32 +21,58 @@ const inputs: Input[] = readLines(__dirname, inputFile())
         return { targetLayout, buttons, joltages }
     })
 
-const buttonPressesP1 = inputs.map(input => {
-    const costs = findLowestCosts(
-        (state: boolean[]) => state.map(v => v ? "#" : ".").join(""),
-        input.targetLayout.map(_ => false),
-        () => 1,
-        (state: boolean[]) => input.buttons.map(button => state.map((v, i) => button.includes(i) ? !v : v))
-    )
+const paritySetCache: boolean[][][] = []
+const possibleParities = (length: number): boolean[][] => {
+    if (paritySetCache[length]) { return paritySetCache[length] }
+    const paritySet = length === 0 ? [[]] : possibleParities(length - 1).flatMap(parities => [[false, ...parities], [true, ...parities]]) 
+    paritySetCache[length] = paritySet
+    return paritySet
+}
+    
 
-    return costs.get(input.targetLayout)
-})
+const isValidParities = (buttons: number[][], targetParities: boolean[], parities: boolean[]): boolean =>
+    targetParities.every((value, i) => !!(buttons.filter((b, j) => b.includes(i) && parities[j]).length % 2) === value)
 
-console.log("(P1): ", buttonPressesP1.reduce(sum))
+const getButtonPressesForParities = (buttons: number[][], targetParities: boolean[]): boolean[][] => {
+    const parities = possibleParities(buttons.length)
+    // console.log("all parities", parities)
+    const validParities = parities.filter(p => isValidParities(buttons, targetParities, p))
+    return validParities
+}
 
-const buttonPressesP2 = inputs.map((input, i, arr) => {
-    console.log(`${i} / ${arr.length}`)
-    const costs = findLowestCosts(
-        (state: number[]) => `{${state.join(",")}}`,
-        input.joltages.map(_ => 0),
-        () => 1,
-        (state: number[]) => input.buttons.map(button =>
-            state
-                .map((v, i) => button.includes(i) ? v + 1 : v))
-                .filter(state => state.every((v, i) => v <= input.joltages[i]))
-    )
+const getMinimalButtonPressesForParity = (input: Input): number =>
+    getButtonPressesForParities(input.buttons, input.targetLayout)
+        .sort(ascendingBy(paritySet => paritySet.filter(Boolean).length))
+        .at(0).filter(Boolean).length
 
-    return costs.get(input.joltages)
-})
-console.log(buttonPressesP2)
-console.log("(P2): ", buttonPressesP2.reduce(sum))
+console.log("(P1): ", inputs.map(getMinimalButtonPressesForParity).reduce(sum))
+
+const cache: HashMap<{ buttons: number[][], targetJoltages: number[] }, number> = new HashMap(({ buttons, targetJoltages}) =>
+    `[${buttons.map(b => b.join(",")).join("|")}] ${targetJoltages.join(",")}`, [])
+
+const getButtonPressesForJoltages = (buttons: number[][], targetJoltages: number[]): number => {
+    if (cache.has({ buttons, targetJoltages })) {
+        return cache.get({ buttons, targetJoltages })
+    }
+    if (targetJoltages.every(joltage => joltage === 0)) {
+        cache.set({buttons, targetJoltages}, 0)
+        return 0
+    }
+    const possibleParities = getButtonPressesForParities(buttons, targetJoltages.map(j => Boolean(j & 1)))
+
+    const result = possibleParities.map((paritySet) => {
+        const lowestBitPresses = paritySet.filter(Boolean).length
+        const higherBitJoltages = targetJoltages.map((joltage, j) =>
+            (joltage - buttons.filter((b, i) => b.includes(j) && paritySet[i]).length) >> 1)
+        if (higherBitJoltages.some(j => j < 0)) {
+            cache.set({buttons, targetJoltages}, Infinity)
+            return Infinity
+        }
+        return lowestBitPresses + 2 * getButtonPressesForJoltages(buttons, higherBitJoltages)
+    }).reduce(min, Infinity)
+
+    cache.set({ buttons, targetJoltages }, result)
+    return result
+}
+const p2Presses = inputs.map(input => getButtonPressesForJoltages(input.buttons, input.joltages)).reduce(sum)
+console.log("(P2): ", p2Presses)
